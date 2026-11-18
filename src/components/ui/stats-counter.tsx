@@ -1,6 +1,6 @@
 ﻿"use client";
 import { useEffect, useRef, useState } from "react";
-import { useInView, useMotionValue, useSpring } from "framer-motion";
+import { useInView, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export interface StatsCounterProps {
@@ -22,8 +22,12 @@ export default function StatsCounter({
 }: StatsCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const reduceMotion = useReducedMotion();
   const motionValue = useMotionValue(0);
-  const springValue = useSpring(motionValue, { duration: duration * 1000, bounce: 0 });
+  const springValue = useSpring(motionValue, {
+    duration: (reduceMotion ? 0 : duration) * 1000,
+    bounce: 0,
+  });
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {

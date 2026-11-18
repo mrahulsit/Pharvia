@@ -1,63 +1,21 @@
 ﻿"use client";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
-  Buildings,
-  ChatTeardropText,
   Checks,
-  EnvelopeSimple,
   FileArrowDown,
-  ListPlus,
   MagnifyingGlass,
   Plus,
-  RadioButton,
   ShareFat,
-  SlidersHorizontal,
-  Users,
   X,
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 const ICON = "h-[18px] w-[18px] text-neutral-400 dark:text-neutral-500";
 
-const DEFAULT_TAGS = [
-  { label: "Reactions", icon: <RadioButton className="h-4 w-4" /> },
-  { label: "People", icon: <Users className="h-4 w-4" /> },
-  { label: "Companies", icon: <Buildings className="h-4 w-4" /> },
-];
-
-const DEFAULT_RESULTS = [
-  {
-    name: "Jason Woordheart",
-    meta: "jason@dribbble.com",
-    actions: [
-      { icon: <ChatTeardropText className="h-4 w-4" />, label: "Message" },
-      { icon: <ListPlus className="h-4 w-4" />, label: "Add to list" },
-    ],
-  },
-  {
-    name: "Rob Miller",
-    meta: "rob@icloud.com",
-    actions: [{ icon: <ListPlus className="h-4 w-4" />, label: "Add to list" }],
-  },
-  {
-    name: "Hannah Steward",
-    meta: "replied on thread",
-    actions: [
-      { icon: <EnvelopeSimple className="h-4 w-4" />, label: "Email" },
-      { icon: <ListPlus className="h-4 w-4" />, label: "Add to list" },
-    ],
-  },
-];
-
-const DEFAULT_QUICK_ACTIONS = [
-  { label: "Create new task", shortcut: "E" },
-  { label: "Create note", shortcut: "S" },
-  { label: "Add member", shortcut: "R" },
-];
-
-const DEFAULT_FILES = [
-  { name: "Invoice", ext: ".pdf", verified: true },
-];
+const DEFAULT_TAGS: SearchTag[] = [];
+const DEFAULT_RESULTS: SearchResult[] = [];
+const DEFAULT_QUICK_ACTIONS: QuickAction[] = [];
+const DEFAULT_FILES: SearchFile[] = [];
 
 export interface SearchTag {
   label: string;
@@ -113,7 +71,7 @@ export interface SearchModalProps {
 }
 
 export function SearchModal({
-  placeholder = "Search for action, people, instruments",
+  placeholder = "Search medicines, healthcare products…",
   tags = DEFAULT_TAGS,
   results = DEFAULT_RESULTS,
   quickActions = DEFAULT_QUICK_ACTIONS,
@@ -217,9 +175,6 @@ export function SearchModal({
           className="min-w-0 flex-1 bg-transparent px-3 text-sm text-current outline-none placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
         />
         <div className="flex shrink-0 items-center gap-2.5">
-          <button type="button" aria-label="Filters" className="text-neutral-400 transition-colors hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200">
-            <SlidersHorizontal className="h-[18px] w-[18px]" />
-          </button>
           <kbd className="flex items-center gap-0.5 rounded-md border border-black/[0.06] bg-black/[0.03] px-1.5 py-0.5 font-sans text-[11px] font-medium text-neutral-400 dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-neutral-500">
             <span className="text-[13px] leading-none">⌘</span>
             {modal && hotkey ? hotkey.toUpperCase() : "F"}
@@ -257,14 +212,18 @@ export function SearchModal({
       {results.length > 0 ? (
         <div className="border-b border-black/[0.06] dark:border-white/[0.06]">
           <p className="px-4 pt-3.5 pb-2 text-[13px] text-neutral-400 dark:text-neutral-500">
-            Last search&nbsp;&nbsp;<span className="text-neutral-600 dark:text-neutral-300">{filteredResults.length}</span>
+            {query.trim() ? "Results" : "Suggested"}&nbsp;&nbsp;
+            <span className="text-neutral-600 dark:text-neutral-300">{filteredResults.length}</span>
           </p>
           <ul className="px-1.5 pb-1.5">
             {filteredResults.map((result, i) => (
               <li key={`${result.name}-${i}`}>
                 <a
-                  href={result.href ?? "#"}
-                  onClick={() => onSelectResult?.(result, i)}
+                  href={result.href ?? undefined}
+                  onClick={(e) => {
+                    if (!result.href) e.preventDefault();
+                    onSelectResult?.(result, i);
+                  }}
                   className="group relative flex items-center rounded-lg px-2.5 py-2 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.04]"
                 >
                   {result.avatar ? (
@@ -308,7 +267,7 @@ export function SearchModal({
       {/* Quick actions */}
       {quickActions.length > 0 ? (
         <div className="border-b border-black/[0.06] px-1.5 py-1.5 dark:border-white/[0.06]">
-          <p className="px-2.5 pt-2 pb-1 text-[13px] text-neutral-400 dark:text-neutral-500">Quick actions</p>
+          <p className="px-2.5 pt-2 pb-1 text-[13px] text-neutral-400 dark:text-neutral-500">Quick links</p>
           {quickActions.map((action, i) => (
             <button
               key={`${action.label}-${i}`}

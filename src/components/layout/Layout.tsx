@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { PincodeSheet } from "./PincodeSheet";
+import { KineticTextLoader } from "@/components/ui/kinetic-text-loader";
 import logo from "@/assets/PHARMACY.png";
 
 function ScrollToTop() {
@@ -26,9 +27,11 @@ export function PageLoader() {
           animate={{ scale: [1, 1.08, 1], opacity: [0.7, 1, 0.7] }}
           transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
         />
-        <span className="font-display text-sm font-semibold tracking-wide text-brand-strong">
-          Loading…
-        </span>
+        <KineticTextLoader
+          text="Pharmacy"
+          className="scale-50 sm:scale-60"
+          aria-hidden="true"
+        />
       </div>
     </div>
   );

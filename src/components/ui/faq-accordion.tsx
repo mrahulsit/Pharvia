@@ -3,14 +3,6 @@ import { useState } from "react";
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_ITEMS = [
-  { question: "What is Vengeance UI?", answer: "Vengeance UI is a high-performance, dark-mode first component library designed for the next generation of web applications." },
-  { question: "Can I use it with Tailwind CSS?", answer: "Yes! All components are built on top of Tailwind CSS and highly customizable using utility classes." },
-  { question: "Are the components accessible?", answer: "Accessibility is a core focus. We ensure proper ARIA attributes, keyboard navigation, and semantic HTML structure." },
-  { question: "Do I need to install a heavy npm package?", answer: "No. Vengeance UI provides a CLI that lets you copy and paste only the components you need directly into your project." },
-  { question: "Is it compatible with React and Next.js?", answer: "Absolutely. The library is built with React in mind and perfectly supports Next.js Server Components and client-side rendering." },
-];
-
 export interface FaqItem {
   question: string;
   answer: string;
@@ -22,8 +14,8 @@ export interface FaqAccordionProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export function FaqAccordion({
-  items = DEFAULT_ITEMS,
-  title = "Vengeance UI FAQs",
+  items = [],
+  title,
   className,
   ...props
 }: FaqAccordionProps) {

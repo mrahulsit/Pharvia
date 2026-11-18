@@ -5,6 +5,7 @@ import { CheckCircle2, LoaderCircle, MapPin, ShoppingBag, Trash2 } from "lucide-
 import { PageHeader } from "@/components/layout/Layout";
 import { ProductIcon, QuantityStepper } from "@/components/product/ProductCard";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { LiquidButton } from "@/components/ui/liquid-button";
 import { AnimatedNumber } from "@/components/ui/count-up";
 import { useCart } from "@/context/CartContext";
 import { useLocationPicker } from "@/context/LocationContext";
@@ -122,9 +123,9 @@ export default function Cart() {
                   </motion.div>
                 ) : (
                   <motion.div key="cta" exit={{ opacity: 0 }}>
-                    <Button size="lg" className="mt-6 w-full" onClick={handleCheckout}>
+                    <LiquidButton size="lg" className="mt-6 w-full" onClick={handleCheckout}>
                       Proceed to checkout
-                    </Button>
+                    </LiquidButton>
                   </motion.div>
                 )}
               </AnimatePresence>
