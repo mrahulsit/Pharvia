@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Environment files: secrets never go in git (commit .env.example instead)
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
