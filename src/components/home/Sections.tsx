@@ -6,6 +6,7 @@ import {
   BadgePercent,
   BellRing,
   Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Crown,
@@ -13,21 +14,18 @@ import {
   Package,
   PhoneCall,
   ShieldCheck,
-  Smartphone,
   Truck,
   Upload,
   type LucideIcon,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Reveal, SectionHeading } from "@/components/ui/reveal";
-import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { ProductRail } from "@/components/product/ProductCard";
 import { categories, products } from "@/data/catalog";
 import { plusBenefits, processSteps, quickLinks, type ProcessStepIcon } from "@/data/site";
 import { cn } from "@/lib/utils";
 import promoPharma10 from "@/assets/img/promo-pharma10.webp";
 import prescriptionImg from "@/assets/img/prescription.webp";
-import appMockup from "@/assets/img/app-mockup.webp";
 import care1 from "@/assets/img/care-1.webp";
 
 const viewAllClass =
@@ -518,52 +516,6 @@ export function WhyUs() {
 }
 
 /* ------------------------------------------------------------------ */
-/* App teaser                                                          */
-/* ------------------------------------------------------------------ */
-
-export function AppSection() {
-  return (
-    <section className="container-page mt-14">
-      <Reveal className="relative overflow-hidden rounded-3xl bg-brand-soft px-6 pt-8 sm:px-12 lg:pt-0">
-        <div className="relative grid items-center gap-8 lg:grid-cols-2">
-          <div className="lg:py-12">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-semibold text-brand-strong">
-              <Smartphone className="size-3.5" aria-hidden="true" /> Coming soon
-            </span>
-            <h2 className="mt-3 text-2xl font-extrabold sm:text-3xl">Pharmacy in your pocket</h2>
-            <p className="mt-2 max-w-md text-slate-600">
-              Order medicines, upload prescriptions and track deliveries from your phone. Our mobile app is on
-              its way.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              {["App Store", "Google Play"].map((store) => (
-                <span
-                  key={store}
-                  aria-disabled="true"
-                  className="inline-flex items-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-white/90"
-                >
-                  <Smartphone className="size-4" aria-hidden="true" /> {store}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="flex justify-center lg:justify-end">
-            <img
-              src={appMockup}
-              alt="The Pharmacy app on a phone"
-              loading="lazy"
-              width="480"
-              height="916"
-              className="-mb-28 w-48 drop-shadow-2xl sm:w-56 lg:-mb-16 lg:mt-8"
-            />
-          </div>
-        </div>
-      </Reveal>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
@@ -598,17 +550,56 @@ const faqItems = [
 
 export function FaqSection() {
   return (
-    <section className="container-page mt-14" aria-label="Frequently asked questions">
-      <div className="grid gap-6 lg:grid-cols-[1fr_2fr] lg:gap-12">
-        <div>
-          <h2 className="text-2xl font-bold sm:text-3xl">Frequently asked questions</h2>
-          <p className="mt-2 text-slate-600">Quick answers about ordering, offers and delivery.</p>
+    <section className="container-page mt-16" aria-label="Frequently asked questions">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-extrabold sm:text-4xl text-ink">Frequently asked questions</h2>
+          <p className="mt-4 text-lg text-slate-500">
+            Everything you need to know about ordering, delivery, and your PLUS membership.
+          </p>
         </div>
-        <FaqAccordion
-          items={faqItems}
-          title=""
-          className="max-w-none font-sans text-slate-900 [&_button]:min-h-[56px] [&_span]:text-[15px]"
-        />
+
+        <div className="space-y-4">
+          {faqItems.map((item, index) => (
+            <Reveal key={index} delay={index * 0.05}>
+              <div
+                className={cn(
+                  "relative border rounded-2xl bg-white p-4 shadow-sm transition-all hover:border-brand/20",
+                  "dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-brand/30"
+                )}
+              >
+                <button
+                  type="button"
+                  className="flex items-center justify-between w-full text-left px-0 py-3"
+                  onClick={() => {}}
+                  aria-expanded={false}
+                >
+                  <span className="text-lg font-bold text-ink">
+                    Q{index + 1}
+                  </span>
+                  <h3 className="flex-1 mx-4 text-lg font-semibold text-ink">{item.question}</h3>
+                  <ChevronDown className="size-5 shrink-0 text-slate-400 transition-transform duration-200" aria-hidden="true" />
+                </button>
+                <div className="border-t border-slate-100 dark:border-neutral-800 mt-3 pt-3 text-slate-600 leading-relaxed dark:text-slate-400">
+                  {item.answer}
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <div className="mt-16 rounded-3xl bg-brand px-8 py-12 text-center text-white">
+          <h3 className="text-xl font-bold sm:text-2xl">Still have questions?</h3>
+          <p className="mt-3 text-white/90">
+            We&apos;re here to help. Email us at support@pharmacy.example or visit the Help &amp; Support page.
+          </p>
+          <Link
+            to="/healthcare"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white px-6 py-2.5 text-sm font-semibold text-brand hover:bg-brand/90 transition-colors"
+          >
+            Contact support <ArrowRight className="size-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );

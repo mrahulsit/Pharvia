@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Hero } from "@/components/home/Hero";
 import {
-  AppSection,
   CategoryGrid,
   FaqSection,
   MustHaveRail,
@@ -29,7 +28,6 @@ export default function Home() {
       <ProcessSection />
       <PlusBanner />
       <WhyUs />
-      <AppSection />
       <FaqSection />
     </>
   );
