@@ -1,48 +1,78 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-refresh/only-export-components */
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { readStorage, writeStorage } from "@/lib/utils";
 
-import { createContext, useState, useContext } from "react";
+const STORAGE_KEY = "pharmacy:cart";
+const CartContext = createContext(null);
 
-const CartContext = createContext();
+export function CartProvider({ children }) {
+  const [items, setItems] = useState(() => {
+    const stored = readStorage(STORAGE_KEY, []);
+    return Array.isArray(stored) ? stored : [];
+  });
 
-export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
+  useEffect(() => {
+    writeStorage(STORAGE_KEY, items);
+  }, [items]);
 
-  const addToCart = (item) => {
-    setCart((prevCart) => [...prevCart, item]);
-    // Simulate storing to a database
-    storeCartToDatabase([...cart, item]);
-  };
+  const addItem = useCallback((product) => {
+    setItems((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [
+        ...prev,
+        {
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          unit: product.unit,
+          form: product.form,
+          quantity: 1,
+        },
+      ];
+    });
+  }, []);
 
-  const removeFromCart = (title) => {
-    const updatedCart = cart.filter((item) => item.Title !== title);
-    setCart(updatedCart);
-    // Simulate storing to a database
-    storeCartToDatabase(updatedCart);
-  };
-
-  const getTotalPrice = () => {
-    return cart.reduce(
-      (total, item) => total + parseFloat(item.Price.replace("₹", "")),
-      0
+  const updateQuantity = useCallback((id, quantity) => {
+    setItems((prev) =>
+      quantity <= 0
+        ? prev.filter((item) => item.id !== id)
+        : prev.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
-  };
+  }, []);
 
-  const storeCartToDatabase = (cart) => {
-    // Simulate a database call
-    console.log("Storing cart to database:", cart);
-  };
+  const removeItem = useCallback((id) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  }, []);
 
-  const contextValue = {
-    cart,
-    addToCart,
-    removeFromCart,
-    getTotalPrice,
-  };
+  const clearCart = useCallback(() => setItems([]), []);
 
-  return (
-    <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>
-  );
-};
+  const value = useMemo(() => {
+    const count = items.reduce((sum, item) => sum + item.quantity, 0);
+    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    return {
+      items,
+      count,
+      subtotal,
+      getQuantity: (id) => items.find((item) => item.id === id)?.quantity ?? 0,
+      addItem,
+      updateQuantity,
+      removeItem,
+      clearCart,
+    };
+  }, [items, addItem, updateQuantity, removeItem, clearCart]);
 
-export const useCart = () => useContext(CartContext);
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+}
+
+export function useCart() {
+  const context = useContext(CartContext);
+  if (!context) throw new Error("useCart must be used inside <CartProvider>");
+  return context;
+}

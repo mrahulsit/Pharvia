@@ -1,43 +1,57 @@
-import { Route, Routes } from "react-router-dom";
-import Home from "./Pages/Home/Home.jsx";
-import { Fitness, MustHave, WomenBaby } from "./Pages/index.js";
-import { NavMain, Footer } from "./Components/index.js";
-import { CartProvider } from "./context/CartContext.jsx";
-import Cart from "./Components/Cart/Cart.jsx";
-import HealthcarePage from "./Pages/HealthcarePage.jsx";
-import Medicine from "./Pages/Medicine/Medicine.jsx";
-import Login from "./Pages/Login.jsx";
+import { lazy } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { MotionConfig } from "framer-motion";
+import { Toaster } from "sonner";
+import { CartProvider } from "@/context/CartContext";
+import { AuthProvider } from "@/context/AuthContext";
+import { LocationProvider } from "@/context/LocationContext";
+import { Layout } from "@/components/layout/Layout";
+import Home from "@/pages/Home";
 
-function App() {
+const Medicine = lazy(() => import("@/pages/Medicine"));
+const Healthcare = lazy(() => import("@/pages/Healthcare"));
+const Category = lazy(() => import("@/pages/Category"));
+const Cart = lazy(() => import("@/pages/Cart"));
+const Auth = lazy(() => import("@/pages/Auth"));
+const Plus = lazy(() => import("@/pages/Plus"));
+const Offers = lazy(() => import("@/pages/Offers"));
+const UploadPrescription = lazy(() => import("@/pages/UploadPrescription"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
+
+export default function App() {
   return (
-    <>
-      <CartProvider>
-        <div>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="*"
-              element={
-                <div>
-                  <NavMain />
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/healthcare" element={<HealthcarePage />} />
-                    <Route path="/medicine" element={<Medicine />} />
-                    <Route path="/musthave" element={<MustHave />} />
-                    <Route path="/fitness" element={<Fitness />} />
-                    <Route path="/women&baby" element={<WomenBaby />} />
-                    <Route path="/cart" element={<Cart />} />
-                  </Routes>
-                  <Footer />
-                </div>
-              }
-            />
-          </Routes>
-        </div>
-      </CartProvider>
-    </>
+    <MotionConfig reducedMotion="user">
+      <AuthProvider>
+        <LocationProvider>
+          <CartProvider>
+            <Routes>
+              <Route element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="medicine" element={<Medicine />} />
+                <Route path="healthcare" element={<Healthcare />} />
+                <Route path="category/:slug" element={<Category />} />
+                <Route path="cart" element={<Cart />} />
+                <Route path="login" element={<Auth mode="login" />} />
+                <Route path="signup" element={<Auth mode="signup" />} />
+                <Route path="plus" element={<Plus />} />
+                <Route path="offers" element={<Offers />} />
+                <Route path="upload-prescription" element={<UploadPrescription />} />
+
+                {/* Old URLs from the previous version of the site */}
+                <Route path="musthave" element={<Navigate to="/category/musthave" replace />} />
+                <Route path="fitness" element={<Navigate to="/category/fitness" replace />} />
+                <Route path="women-baby" element={<Navigate to="/category/mother-baby" replace />} />
+                <Route path="women&baby" element={<Navigate to="/category/mother-baby" replace />} />
+                <Route path="member" element={<Navigate to="/plus" replace />} />
+                <Route path="medicines" element={<Navigate to="/medicine" replace />} />
+
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+            <Toaster position="top-center" richColors closeButton />
+          </CartProvider>
+        </LocationProvider>
+      </AuthProvider>
+    </MotionConfig>
   );
 }
-
-export default App;
