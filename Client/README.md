@@ -1,6 +1,6 @@
-# Pharmacy Management System
+# Pharvia — at every step
 
-This project is a Pharmacy Management System built with React and Vite on the frontend, and Node.js with Express on the backend.
+Pharvia is an online pharmacy storefront: search and order medicines, upload a prescription, pick a delivery pincode on an interactive globe and map, and save with PLUS membership. React + TypeScript + Vite on the frontend, Node.js + Express + MongoDB on the backend. See `PROJECT_PROFILE.md` for the full write-up.
 
 ## Table of Contents
 

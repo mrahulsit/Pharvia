@@ -1,0 +1,126 @@
+import { Fragment, Suspense, useEffect, type ReactNode } from "react";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import { SiteHeader } from "./SiteHeader";
+import { SiteFooter } from "./SiteFooter";
+import { LocationModal } from "@/components/location/LocationModal";
+import { AuthModal } from "@/components/auth/AuthModal";
+import { KineticTextLoader } from "@/components/ui/kinetic-text-loader";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import logo from "@/assets/brand/pharvia-mark.webp";
+
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (hash) {
+      // Wait a frame so the target section has rendered (e.g. /#faq from another page).
+      const id = window.setTimeout(
+        () => document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "instant", block: "start" }),
+        60
+      );
+      return () => window.clearTimeout(id);
+    }
+    window.scrollTo({ top: 0, behavior: "instant" });
+    return undefined;
+  }, [pathname, hash]);
+  return null;
+}
+
+export function PageLoader() {
+  return (
+    <div className="grid min-h-[60vh] place-items-center" role="status" aria-live="polite">
+      <div className="flex flex-col items-center gap-4">
+        <motion.img
+          src={logo}
+          alt=""
+          className="size-14 object-contain"
+          animate={{ scale: [1, 1.08, 1], opacity: [0.7, 1, 0.7] }}
+          transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <KineticTextLoader
+          text="Pharvia"
+          className="scale-50 sm:scale-60"
+          aria-hidden="true"
+        />
+      </div>
+    </div>
+  );
+}
+
+export function Layout() {
+  return (
+    <div className="flex min-h-dvh flex-col">
+      <a
+        href="#main"
+        className="sr-only z-200 rounded-lg bg-brand-strong px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+      >
+        Skip to content
+      </a>
+      <ScrollToTop />
+      <SiteHeader />
+      <main id="main" className="flex-1 pb-4">
+        <Suspense fallback={<PageLoader />}>
+          <Outlet />
+        </Suspense>
+      </main>
+      <SiteFooter />
+      <LocationModal />
+      <AuthModal />
+    </div>
+  );
+}
+
+interface Crumb {
+  label: string;
+  to?: string;
+}
+
+interface PageHeaderProps {
+  crumbs?: Crumb[];
+  title: string;
+  description?: string;
+  children?: ReactNode;
+}
+
+/** Breadcrumb + title block used at the top of inner pages. */
+export function PageHeader({ crumbs = [], title, description, children }: PageHeaderProps) {
+  return (
+    <section className="border-b border-slate-200/80 bg-white">
+      <div className="container-page py-5 sm:py-7">
+        <Breadcrumb>
+          <BreadcrumbList className="text-xs sm:text-sm">
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            {crumbs.map((crumb) => (
+              <Fragment key={crumb.label}>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  {crumb.to ? (
+                    <BreadcrumbLink asChild>
+                      <Link to={crumb.to}>{crumb.label}</Link>
+                    </BreadcrumbLink>
+                  ) : (
+                    <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+              </Fragment>
+            ))}
+          </BreadcrumbList>
+        </Breadcrumb>
+        <h1 className="mt-2 text-2xl font-extrabold text-ink sm:text-3xl">{title}</h1>
+        {description && <p className="mt-1 max-w-2xl text-slate-600">{description}</p>}
+        {children}
+      </div>
+    </section>
+  );
+}

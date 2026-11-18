@@ -1,26 +1,212 @@
-@import "./Styles/BrandCard.css";
-@import "./Styles/Brands.css";
-@import "./Styles/Card.css";
-@import "./Styles/Carousels.css";
-@import "./Styles/Cart.css";
-@import "./Styles/Footer.css";
-@import "./Styles/Healthcare.css";
-@import "./Styles/Home.css";
-@import "./Styles/Login.css";
-@import "./Styles/MedicineCard.css";
-@import "./Styles/Navbar.css";
-@import "./Styles/Sidebar.css";
-@import "./Styles/Signup.css";
-@import "./Styles/Slide.css";
+@import "tailwindcss";
 
-:root {
-  font-weight: 400;
+/* The site is light-only: `dark:` styles (from Vengeance components) apply only under an explicit .dark class,
+   not when the visitor's OS is in dark mode. */
+@custom-variant dark (&:where(.dark, .dark *));
 
-  background-color: #ffffff;
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans Variable", "Inter Variable", ui-sans-serif,
+    system-ui, sans-serif;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  user-select: none;
+  /* Brand colours, taken from the Pharvia logo (src/assets/brand) */
+  --color-brand: #1cb04b;
+  --color-brand-strong: #0a5a25;
+  --color-brand-soft: #e8f7ed;
+  --color-brand-50: #f3fbf5;
+  --color-accent: #128479;
+  --color-accent-soft: #089b6f;
+  --color-surface: #f6faf7;
+  --color-canvas: #f4f6f5;
+  --color-ink: #0f1f17;
+  --color-plus: #4338ca;
+  --color-plus-soft: #eef0ff;
+  --color-offer: #c2410c;
+  --color-offer-soft: #fff1e8;
+
+  --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -10px rgb(15 23 42 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(15 23 42 / 0.04), 0 20px 40px -16px rgb(10 90 37 / 0.28);
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.05), 0 2px 8px -2px rgb(15 23 42 / 0.06);
+  --shadow-search: 0 1px 2px rgb(15 23 42 / 0.06), 0 12px 32px -12px rgb(10 90 37 / 0.25);
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-tooltip-in: tooltip-in 0.15s ease-out;
+  --animate-dropdown-in: dropdown-in 0.16s ease-out;
+  --animate-overlay-in: overlay-in 0.2s ease-out;
+  --animate-dialog-in: dialog-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes overlay-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96) translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes dropdown-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes tooltip-in {
+    from {
+      opacity: 0;
+      transform: translateY(2px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+}
+
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 80rem;
+  padding-inline: 1rem;
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
+  @media (width >= 64rem) {
+    padding-inline: 2rem;
+  }
+}
+
+/* Vengeance UI border-beam: the beam travels along the element's border */
+@keyframes border-beam {
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+/* Vengeance UI line-hover-link ("slide" and "fade" variants) */
+.link-hover {
+  position: relative;
+  display: inline-flex;
+  width: fit-content;
+  text-decoration: none;
+}
+.link-hover::before,
+.link-hover::after {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  pointer-events: none;
+}
+.link-hover::before {
+  content: "";
+}
+.link-hover--slide::before {
+  transform: scale3d(0, 1, 1);
+  transform-origin: 100% 50%;
+  transition: transform 0.3s ease;
+}
+.link-hover--slide:hover::before,
+.link-hover--slide:focus-visible::before {
+  transform: scale3d(1, 1, 1);
+  transform-origin: 0% 50%;
+}
+.link-hover--fade::before {
+  opacity: 0;
+  transform: translate3d(0, 3px, 0);
+  transition:
+    transform 0.3s cubic-bezier(0.2, 1, 0.8, 1),
+    opacity 0.3s cubic-bezier(0.2, 1, 0.8, 1);
+}
+.link-hover--fade:hover::before,
+.link-hover--fade:focus-visible::before {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Horizontal product / tile rails that scroll on small screens */
+@utility rail {
+  display: grid;
+  grid-auto-flow: column;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  & > * {
+    scroll-snap-align: start;
+  }
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-slate-200);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-white font-sans text-slate-900 antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight text-slate-900;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-strong);
+    outline-offset: 2px;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
