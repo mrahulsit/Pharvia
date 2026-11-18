@@ -555,7 +555,7 @@ const faqItems: FaqItem[] = [
 
 export function FaqSection() {
   return (
-    <section className="container-page mt-16" aria-label="Frequently asked questions">
+    <section id="faq" className="container-page mt-16 scroll-mt-40" aria-label="Frequently asked questions">
       <div className="mx-auto max-w-3xl">
         <div className="mb-8 text-center">
           <h2 className="text-2xl font-extrabold text-ink sm:text-3xl">Frequently asked questions</h2>

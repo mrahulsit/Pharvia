@@ -1,4 +1,4 @@
-﻿import { Suspense, useEffect, type ReactNode } from "react";
+import { Suspense, useEffect, type ReactNode } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
@@ -9,10 +9,19 @@ import { KineticTextLoader } from "@/components/ui/kinetic-text-loader";
 import logo from "@/assets/PHARMACY.png";
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
+    if (hash) {
+      // Wait a frame so the target section has rendered (e.g. /#faq from another page).
+      const id = window.setTimeout(
+        () => document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "instant", block: "start" }),
+        60
+      );
+      return () => window.clearTimeout(id);
+    }
     window.scrollTo({ top: 0, behavior: "instant" });
-  }, [pathname]);
+    return undefined;
+  }, [pathname, hash]);
   return null;
 }
 

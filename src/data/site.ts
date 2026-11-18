@@ -95,6 +95,16 @@ export interface FooterColumn {
 /** Footer content (from the original Footer). Plain strings have no page yet. */
 export const footerColumns: FooterColumn[] = [
   {
+    title: "Shop",
+    links: [
+      { label: "Medicines", to: "/medicine" },
+      { label: "Healthcare products", to: "/healthcare" },
+      { label: "Upload prescription", to: "/upload-prescription" },
+      { label: "Offers", to: "/offers" },
+      { label: "PLUS membership", to: "/plus" },
+    ],
+  },
+  {
     title: "Featured Categories",
     links: [
       { label: "Nutrition & Fitness", to: "/category/fitness" },
@@ -111,7 +121,7 @@ export const footerColumns: FooterColumn[] = [
   },
   {
     title: "Resources",
-    links: ["Blog", "Timeline", "FAQs", "Support", { label: "Products", to: "/medicine" }, "Newsletter"],
+    links: ["Blog", "Timeline", { label: "FAQs", to: "/#faq" }, "Support", { label: "Products", to: "/medicine" }, "Newsletter"],
   },
   {
     title: "Help & Support",
