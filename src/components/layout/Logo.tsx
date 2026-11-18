@@ -1,29 +1,36 @@
 import { Link } from "react-router-dom";
-import logo from "@/assets/brand/pharvia-mark.webp";
+import lockup from "@/assets/brand/pharvia-lockup.webp";
+import mark from "@/assets/brand/pharvia-mark.webp";
 import { cn } from "@/lib/utils";
 import { brand } from "@/data/site";
 
 interface LogoProps {
   className?: string;
+  /** Dark backgrounds: the lockup's wordmark is dark green, so fall back to the mark + white text. */
   light?: boolean;
 }
 
 export function Logo({ className, light = false }: LogoProps) {
+  if (!light) {
+    return (
+      <Link to="/" className={cn("flex shrink-0 items-center", className)} aria-label={`${brand.name} home`}>
+        <img
+          src={lockup}
+          alt={`${brand.name} — ${brand.tagline}`}
+          width="1000"
+          height="315"
+          className="h-10 w-auto sm:h-11 lg:h-13"
+        />
+      </Link>
+    );
+  }
+
   return (
     <Link to="/" className={cn("flex items-center gap-2.5", className)} aria-label={`${brand.name} home`}>
-      <img src={logo} alt="" width="40" height="40" className="size-10 shrink-0 object-contain" />
+      <img src={mark} alt="" width="40" height="40" className="size-10 shrink-0 object-contain" />
       <span className="flex flex-col leading-none">
-        <span
-          className={cn(
-            "font-display text-xl font-extrabold tracking-tight",
-            light ? "text-white" : "text-brand-strong"
-          )}
-        >
-          {brand.name}
-        </span>
-        <span className={cn("text-xs font-medium", light ? "text-white/70" : "text-slate-500")}>
-          {brand.tagline}
-        </span>
+        <span className="font-display text-xl font-extrabold tracking-tight text-white">{brand.name}</span>
+        <span className="text-xs font-medium text-white/70">{brand.tagline}</span>
       </span>
     </Link>
   );
