@@ -19,7 +19,7 @@ export function Logo({ className, light = false }: LogoProps) {
           alt={`${brand.name} — ${brand.tagline}`}
           width="1000"
           height="315"
-          className="h-10 w-auto sm:h-11 lg:h-13"
+          className="h-9 w-auto sm:h-10 lg:h-11"
         />
       </Link>
     );
