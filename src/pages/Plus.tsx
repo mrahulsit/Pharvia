@@ -33,7 +33,7 @@ import { PLUS_DISCOUNT, plusPrice, products } from "@/data/catalog";
 import { plusBenefits } from "@/data/site";
 import { formatPrice } from "@/lib/utils";
 import { usePageTitle } from "@/lib/usePageTitle";
-import logo from "@/assets/PHARMACY.png";
+import logo from "@/assets/brand/pharvia-mark.webp";
 
 const benefitIcons: LucideIcon[] = [BadgePercent, Truck, Gift, Sparkles];
 
@@ -123,7 +123,7 @@ function MembershipCard() {
       <div className="relative flex h-full flex-col justify-between">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="" className="size-8 rounded-lg bg-white p-0.5" />
+            <img src={logo} alt="" className="size-8 rounded-lg bg-white p-0.5 object-contain" />
             <span className="font-display text-lg font-extrabold">Pharvia</span>
           </div>
           <Crown className="size-8" />

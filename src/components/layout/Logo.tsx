@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "@/assets/PHARMACY.png";
+import logo from "@/assets/brand/pharvia-mark.webp";
 import { cn } from "@/lib/utils";
 import { brand } from "@/data/site";
 
@@ -11,7 +11,7 @@ interface LogoProps {
 export function Logo({ className, light = false }: LogoProps) {
   return (
     <Link to="/" className={cn("flex items-center gap-2.5", className)} aria-label={`${brand.name} home`}>
-      <img src={logo} alt="" width="40" height="40" className="size-10 shrink-0" />
+      <img src={logo} alt="" width="40" height="40" className="size-10 shrink-0 object-contain" />
       <span className="flex flex-col leading-none">
         <span
           className={cn(

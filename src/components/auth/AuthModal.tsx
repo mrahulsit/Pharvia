@@ -23,7 +23,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useAuth, type AuthMode } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { cn, getErrorMessage } from "@/lib/utils";
-import logo from "@/assets/PHARMACY.png";
+import logo from "@/assets/brand/pharvia-mark.webp";
 import loginBanner from "@/assets/img/login-banner.webp";
 import signupBanner from "@/assets/img/signup-banner.webp";
 
@@ -187,7 +187,7 @@ function BrandPanel({ mode }: { mode: AuthMode }) {
       className="relative hidden flex-col overflow-hidden text-white md:flex"
     >
       <div className="relative z-10 flex items-center gap-2.5 p-7 pb-0">
-        <img src={logo} alt="" className="size-9 rounded-lg bg-white p-0.5" />
+        <img src={logo} alt="" className="size-9 rounded-lg bg-white p-0.5 object-contain" />
         <span className="leading-none">
           <span className="block font-display text-lg font-extrabold">Pharvia</span>
           <span className="text-xs text-white/70">at every step</span>
@@ -338,7 +338,7 @@ export function AuthModal() {
           <div className="flex flex-col p-6 sm:p-8">
             {/* Compact brand row on phones, where the panel is hidden */}
             <div className="mb-4 flex items-center gap-2 md:hidden">
-              <img src={logo} alt="" className="size-8" />
+              <img src={logo} alt="" className="size-8 object-contain" />
               <span className="font-display font-extrabold text-brand-strong">Pharvia</span>
             </div>
 

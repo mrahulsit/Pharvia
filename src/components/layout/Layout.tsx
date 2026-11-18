@@ -14,7 +14,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import logo from "@/assets/PHARMACY.png";
+import logo from "@/assets/brand/pharvia-mark.webp";
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -40,7 +40,7 @@ export function PageLoader() {
         <motion.img
           src={logo}
           alt=""
-          className="size-14"
+          className="size-14 object-contain"
           animate={{ scale: [1, 1.08, 1], opacity: [0.7, 1, 0.7] }}
           transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
         />

@@ -14,8 +14,10 @@ delivery pincode on an interactive 3D globe that zooms into a street map, and sa
 
 - It sounds like a real medicine brand, not a generic word ("Pharmacy") and not a code tool.
 - **via (the way, the path)** pairs with the tagline **"at every step"**: *Pharvia — at every step*.
-- The logo is a green **P** whose stem is a medical **plus**, so the mark still reads as P-for-Pharvia and
-  as a pharmacy cross.
+- **Logo** (generated with ChatGPT, Nov 2026): a green **P** whose bowl turns into a forward **arrow** (the
+  "via", the way) with a deep-green medical **plus** at its base, beside a "Pharvia / at every step" wordmark.
+  Full kit (transparent mark, lockup, favicons, app icons, web manifest, social image) is in
+  `src/assets/brand/` and `public/`. See `src/assets/brand/README.md`.
 - **Names considered and rejected** (Nov 2026) because real health businesses already use them: PlusMeds
   (UK online pharmacy), PlusVeda (Indian pharmacy software), Pluscure (Indian pharma company and pharmacy),
   Pill Plus / PillPlus.in, Pillora and Pillvana (medicine apps), Pharmora (Nigerian e-pharmacy), Pranacare,
@@ -195,8 +197,8 @@ bcrypt, accessibility (WCAG, ARIA), responsive design, ESLint, Git.
 - Source code: _add the GitHub URL_
 - Screenshots / demo video: _record the globe → map pincode flow; it's the most memorable 15 seconds_
 
-## Assets that still say "Pharmacy"
+## Assets that still show the old name
 
-These images have the old name baked in and need redesigning with the Pharvia wordmark:
-`src/assets/img/login-banner.webp` (counter sign), `app-mockup.webp` (splash screen) and
-`promo-pharma10.webp` (small footer text). All on-screen text already says Pharvia.
+The site logo, favicons and app icons are all Pharvia now. These illustrations still have the old
+"Pharmacy" text baked into the artwork and should be regenerated: `src/assets/img/login-banner.webp` (counter
+sign), `app-mockup.webp` (phone splash screen) and `promo-pharma10.webp` (small footer text).
