@@ -1,11 +1,18 @@
-import { Suspense, useEffect, type ReactNode } from "react";
+import { Fragment, Suspense, useEffect, type ReactNode } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { PincodeSheet } from "./PincodeSheet";
 import { KineticTextLoader } from "@/components/ui/kinetic-text-loader";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import logo from "@/assets/PHARMACY.png";
 
 function ScrollToTop() {
@@ -85,29 +92,29 @@ export function PageHeader({ crumbs = [], title, description, children }: PageHe
   return (
     <section className="border-b border-slate-200/80 bg-white">
       <div className="container-page py-5 sm:py-7">
-        <nav aria-label="Breadcrumb">
-          <ol className="flex flex-wrap items-center gap-1 text-xs text-slate-500 sm:text-sm">
-            <li>
-              <Link to="/" className="hover:text-brand-strong">
-                Home
-              </Link>
-            </li>
+        <Breadcrumb>
+          <BreadcrumbList className="text-xs sm:text-sm">
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/">Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
             {crumbs.map((crumb) => (
-              <li key={crumb.label} className="flex items-center gap-1">
-                <ChevronRight className="size-3.5" aria-hidden="true" />
-                {crumb.to ? (
-                  <Link to={crumb.to} className="hover:text-brand-strong">
-                    {crumb.label}
-                  </Link>
-                ) : (
-                  <span aria-current="page" className="font-medium text-slate-700">
-                    {crumb.label}
-                  </span>
-                )}
-              </li>
+              <Fragment key={crumb.label}>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  {crumb.to ? (
+                    <BreadcrumbLink asChild>
+                      <Link to={crumb.to}>{crumb.label}</Link>
+                    </BreadcrumbLink>
+                  ) : (
+                    <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+              </Fragment>
             ))}
-          </ol>
-        </nav>
+          </BreadcrumbList>
+        </Breadcrumb>
         <h1 className="mt-2 text-2xl font-extrabold text-ink sm:text-3xl">{title}</h1>
         {description && <p className="mt-1 max-w-2xl text-slate-600">{description}</p>}
         {children}

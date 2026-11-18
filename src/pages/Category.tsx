@@ -1,7 +1,16 @@
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Link, useParams } from "react-router-dom";
-import { ChevronRight, FileText, PackageOpen, ShieldCheck, Truck } from "lucide-react";
+import { FileText, PackageOpen, ShieldCheck, Truck } from "lucide-react";
 import { ProductListing } from "@/components/product/ProductListing";
 import { buttonVariants } from "@/components/ui/button";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { CategoryGrid } from "@/components/home/Sections";
 import { getCategory, products } from "@/data/catalog";
 import { cn } from "@/lib/utils";
@@ -23,21 +32,19 @@ export default function Category() {
         <div className={cn("relative overflow-hidden rounded-3xl", category.tint)}>
           <div className="grid items-center gap-6 p-6 sm:grid-cols-[1fr_auto] sm:p-10">
             <div>
-              <nav aria-label="Breadcrumb">
-                <ol className="flex items-center gap-1 text-sm text-slate-500">
-                  <li>
-                    <Link to="/" className="hover:text-slate-900">
-                      Home
-                    </Link>
-                  </li>
-                  <li className="flex items-center gap-1">
-                    <ChevronRight className="size-3.5" aria-hidden="true" />
-                    <span aria-current="page" className="font-medium text-slate-700">
-                      {category.title}
-                    </span>
-                  </li>
-                </ol>
-              </nav>
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link to="/">Home</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>{category.title}</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
               <h1 className={cn("mt-3 text-3xl font-extrabold sm:text-4xl", category.accent)}>{category.title}</h1>
               <p className="mt-2 max-w-xl text-slate-700">{category.description}</p>
               <ul className="mt-5 flex flex-wrap gap-2 text-sm">
@@ -64,24 +71,26 @@ export default function Category() {
         {items.length ? (
           <ProductListing products={items} heading={`All ${category.title}`} />
         ) : (
-          <div className="flex flex-col items-center rounded-3xl border border-dashed bg-canvas px-6 py-16 text-center">
-            <span className={cn("grid size-16 place-items-center rounded-2xl", category.tint)}>
-              <PackageOpen className={cn("size-8", category.accent)} aria-hidden="true" />
-            </span>
-            <h2 className="mt-4 text-xl font-bold">{category.title} products are coming soon</h2>
-            <p className="mt-1 max-w-md text-sm text-slate-600">
-              In the meantime, browse our must-have medicines or upload a prescription and we&apos;ll arrange
-              what you need.
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Empty className="bg-canvas">
+            <EmptyHeader>
+              <EmptyMedia variant="icon" className={category.tint}>
+                <PackageOpen className={category.accent} aria-hidden="true" />
+              </EmptyMedia>
+              <EmptyTitle>{category.title} products are coming soon</EmptyTitle>
+              <EmptyDescription>
+                In the meantime, browse our must-have medicines or upload a prescription and we&apos;ll arrange
+                what you need.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
               <Link to="/category/musthave" className={buttonVariants({ variant: "outline" })}>
                 Shop must haves
               </Link>
               <Link to="/upload-prescription" className={buttonVariants()}>
                 <FileText /> Upload prescription
               </Link>
-            </div>
-          </div>
+            </EmptyContent>
+          </Empty>
         )}
       </section>
 

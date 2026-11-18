@@ -1,5 +1,4 @@
-import { useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { useState, type FormEvent, type ReactElement } from "react";
 import {
   ArrowUp,
   BadgePercent,
@@ -17,7 +16,19 @@ import {
 import { toast } from "sonner";
 import { Logo } from "./Logo";
 import { footerColumns, type FooterColumn } from "@/data/site";
+import { LineHoverLink } from "@/components/ui/line-hover-link";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+
+/** Hover tooltip for footer items that don't have a page yet. */
+function ComingSoon({ children, label = "Coming soon" }: { children: ReactElement; label?: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* Trust band                                                          */
@@ -141,14 +152,19 @@ function LinkColumn({ column }: { column: FooterColumn }) {
       <ul id={listId} className={cn("space-y-2.5 pb-4 text-sm md:block md:pb-0", open ? "block" : "hidden")}>
         {column.links.map((link) =>
           typeof link === "string" ? (
-            <li key={link} className="text-slate-400" title="Coming soon">
-              {link}
+            <li key={link}>
+              <ComingSoon>
+                <span className="cursor-default text-slate-400">
+                  {link}
+                  <span className="sr-only"> (coming soon)</span>
+                </span>
+              </ComingSoon>
             </li>
           ) : (
             <li key={link.label}>
-              <Link to={link.to!} className="text-slate-600 transition hover:text-brand-strong">
+              <LineHoverLink to={link.to!} className="text-slate-600 transition-colors hover:text-brand-strong">
                 {link.label}
-              </Link>
+              </LineHoverLink>
             </li>
           )
         )}
@@ -188,10 +204,10 @@ export function SiteFooter() {
             <p className="mb-2.5 mt-6 text-xs font-bold uppercase tracking-wider text-slate-500">Get the app</p>
             <div className="flex flex-wrap gap-2">
               {["App Store", "Google Play"].map((store) => (
+                <ComingSoon key={store} label="Our app is on its way">
                 <span
-                  key={store}
                   aria-disabled="true"
-                  className="inline-flex items-center gap-2 rounded-lg bg-ink px-3 py-2 text-white"
+                  className="inline-flex cursor-default items-center gap-2 rounded-lg bg-ink px-3 py-2 text-white"
                 >
                   <Smartphone className="size-4 shrink-0" aria-hidden="true" />
                   <span className="leading-none">
@@ -199,20 +215,19 @@ export function SiteFooter() {
                     <span className="text-xs font-bold">{store}</span>
                   </span>
                 </span>
+                </ComingSoon>
               ))}
             </div>
 
             <p className="mb-2.5 mt-6 text-xs font-bold uppercase tracking-wider text-slate-500">Follow us</p>
             <ul className="flex gap-2">
               {socials.map(({ label, Icon }) => (
-                <li
-                  key={label}
-                  title={`${label} (coming soon)`}
-                  className="grid size-9 place-items-center rounded-full border border-slate-200 bg-white text-slate-500"
-                >
-                  <Icon className="size-4" aria-hidden="true" />
-                  <span className="sr-only">{label} (coming soon)</span>
-                </li>
+                <ComingSoon key={label} label={`${label}: coming soon`}>
+                  <li className="grid size-9 cursor-default place-items-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-brand/40 hover:text-brand-strong">
+                    <Icon className="size-4" aria-hidden="true" />
+                    <span className="sr-only">{label} (coming soon)</span>
+                  </li>
+                </ComingSoon>
               ))}
             </ul>
           </div>

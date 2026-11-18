@@ -1,9 +1,10 @@
-﻿import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronRight, FileText, Pill, Search, ShieldCheck, TicketPercent } from "lucide-react";
 import { useLocationPicker } from "@/context/LocationContext";
 import { searchPhrases } from "@/data/site";
+import { BorderBeam } from "@/components/ui/border-beam";
 import heroCare from "@/assets/img/hero-care.webp";
 
 const popular = ["Paracetamol", "Cetirizine", "Metformin", "Omeprazole", "Amlodipine"];
@@ -28,7 +29,8 @@ function HeroSearch() {
 
   return (
     <form onSubmit={onSubmit} role="search" className="w-full">
-      <div className="flex items-center rounded-2xl border border-slate-200 bg-white p-1.5 shadow-search transition focus-within:border-brand-strong focus-within:ring-4 focus-within:ring-brand/15">
+      <div className="relative flex items-center rounded-2xl border border-slate-200 bg-white p-1.5 shadow-search transition focus-within:border-brand-strong focus-within:ring-4 focus-within:ring-brand/15">
+        <BorderBeam size={120} duration={10} borderWidth={1.5} />
         <Search className="ml-3 size-5 shrink-0 text-slate-400" aria-hidden="true" />
         <div className="relative h-12 flex-1">
           <input

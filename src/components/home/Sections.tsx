@@ -20,6 +20,7 @@ import {
 import { buttonVariants } from "@/components/ui/button";
 import { Reveal, SectionHeading } from "@/components/ui/reveal";
 import { FaqAccordion, type FaqItem } from "@/components/ui/faq-accordion";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ProductRail } from "@/components/product/ProductCard";
 import { categories, products } from "@/data/catalog";
 import { plusBenefits, processSteps, quickLinks, type ProcessStepIcon } from "@/data/site";
@@ -81,9 +82,14 @@ export function QuickLinks() {
               {content}
             </Link>
           ) : (
-            <div key={item.title} className="group block cursor-default opacity-75" aria-disabled="true">
-              {content}
-            </div>
+            <Tooltip key={item.title}>
+              <TooltipTrigger asChild>
+                <div className="group block cursor-default opacity-75" aria-disabled="true">
+                  {content}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>{item.title} are coming soon</TooltipContent>
+            </Tooltip>
           );
         })}
       </div>

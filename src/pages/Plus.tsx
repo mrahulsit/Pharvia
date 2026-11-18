@@ -1,4 +1,12 @@
 import { useState, type FormEvent } from "react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -6,7 +14,6 @@ import {
   BadgePercent,
   Bell,
   Check,
-  ChevronRight,
   Crown,
   Gift,
   ShoppingCart,
@@ -17,6 +24,8 @@ import {
 import { toast } from "sonner";
 import { Reveal, SectionHeading } from "@/components/ui/reveal";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
+import { Slider } from "@/components/ui/slider";
+import { BorderBeam } from "@/components/ui/border-beam";
 import { AnimatedNumber } from "@/components/ui/count-up";
 import { ProductIcon } from "@/components/product/ProductCard";
 import { useCart } from "@/context/CartContext";
@@ -125,6 +134,7 @@ function MembershipCard() {
           <p className="mt-1 text-sm font-semibold">10% off · Free delivery · Unlimited offers</p>
         </div>
       </div>
+      <BorderBeam size={140} duration={8} borderWidth={2} colorFrom="#ffffff" colorTo="#4338ca" />
     </motion.div>
   );
 }
@@ -138,21 +148,19 @@ function PlusHero() {
 
         <div className="grid grid-cols-1 items-center gap-10 p-6 sm:p-10 lg:grid-cols-[1.2fr_1fr] lg:p-14">
           <div className="min-w-0">
-            <nav aria-label="Breadcrumb" className="mb-5">
-              <ol className="flex items-center gap-1 text-sm text-white/60">
-                <li>
-                  <Link to="/" className="hover:text-white">
-                    Home
-                  </Link>
-                </li>
-                <li className="flex items-center gap-1">
-                  <ChevronRight className="size-3.5" aria-hidden="true" />
-                  <span aria-current="page" className="font-medium text-white">
-                    PLUS
-                  </span>
-                </li>
-              </ol>
-            </nav>
+            <Breadcrumb className="mb-5">
+              <BreadcrumbList className="text-white/60">
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild className="hover:text-white">
+                    <Link to="/">Home</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="text-white">PLUS</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-300 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-indigo-950">
               <Crown className="size-3.5" aria-hidden="true" /> PLUS membership
             </span>
@@ -228,7 +236,6 @@ function SavingsCalculator() {
   const { subtotal, count } = useCart();
   const monthly = spend * PLUS_DISCOUNT;
   const yearly = monthly * 12;
-  const fill = ((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
 
   return (
     <section className="container-page mt-14">
@@ -239,23 +246,21 @@ function SavingsCalculator() {
 
           <div className="mt-8">
             <div className="flex items-baseline justify-between">
-              <label htmlFor="monthly-spend" className="text-sm font-semibold text-slate-700">
-                Monthly medicine spend
-              </label>
-              <output htmlFor="monthly-spend" className="font-display text-2xl font-extrabold text-ink tabular-nums">
+              <span className="text-sm font-semibold text-slate-700">Monthly medicine spend</span>
+              <output aria-live="polite" className="font-display text-2xl font-extrabold text-ink tabular-nums">
                 {formatRupees(spend)}
               </output>
             </div>
-            <input
+            <Slider
               id="monthly-spend"
-              type="range"
+              aria-label="Monthly medicine spend"
+              tone="plus"
               min={MIN_SPEND}
               max={MAX_SPEND}
               step={100}
-              value={spend}
-              onChange={(event) => setSpend(Number(event.target.value))}
-              className="mt-4 h-2 w-full cursor-pointer appearance-none rounded-full accent-plus"
-              style={{ background: `linear-gradient(to right, var(--color-plus) ${fill}%, #fff ${fill}%)` }}
+              value={[spend]}
+              onValueChange={([next]) => setSpend(next)}
+              className="mt-5"
             />
             <div className="mt-2 flex justify-between text-xs text-slate-500">
               <span>{formatRupees(MIN_SPEND)}</span>

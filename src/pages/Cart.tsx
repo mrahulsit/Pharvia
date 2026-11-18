@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, Crown, LoaderCircle, MapPin, ShoppingBag, Trash2 } from "lucide-react";
+import { CheckCircle2, Crown, MapPin, ShoppingBag, Trash2 } from "lucide-react";
 import { plusPrice } from "@/data/catalog";
+import { Spinner } from "@/components/ui/spinner";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { PageHeader } from "@/components/layout/Layout";
 import { ProductIcon, QuantityStepper } from "@/components/product/ProductCard";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -28,16 +30,23 @@ export default function Cart() {
 
       <section className="container-page mt-10">
         {items.length === 0 ? (
-          <div className="flex flex-col items-center rounded-3xl border border-dashed bg-surface px-6 py-20 text-center">
-            <span className="grid size-20 place-items-center rounded-full bg-brand-soft text-brand-strong">
-              <ShoppingBag className="size-9" aria-hidden="true" />
-            </span>
-            <h2 className="mt-5 text-2xl font-bold">Your cart is empty</h2>
-            <p className="mt-1 text-slate-600">Add medicines and healthcare products to get started.</p>
-            <Link to="/medicine" className={`${buttonVariants({ size: "lg" })} mt-6`}>
-              Browse medicines
-            </Link>
-          </div>
+          <Empty className="py-16 md:py-20">
+            <EmptyHeader>
+              <EmptyMedia variant="icon" className="size-20 rounded-full [&_svg:not([class*='size-'])]:size-9">
+                <ShoppingBag aria-hidden="true" />
+              </EmptyMedia>
+              <EmptyTitle className="text-2xl">Your cart is empty</EmptyTitle>
+              <EmptyDescription>Add medicines and healthcare products to get started.</EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Link to="/medicine" className={buttonVariants({ size: "lg" })}>
+                Browse medicines
+              </Link>
+              <Link to="/upload-prescription" className={buttonVariants({ size: "lg", variant: "outline" })}>
+                Upload prescription
+              </Link>
+            </EmptyContent>
+          </Empty>
         ) : (
           <div className="grid items-start gap-8 lg:grid-cols-[1fr_22rem]">
             <ul className="divide-y rounded-3xl border bg-white">
@@ -130,7 +139,7 @@ export default function Cart() {
                     className="mt-6 flex items-center gap-3 rounded-xl bg-brand-50 p-4 text-sm font-medium text-brand-strong"
                     role="status"
                   >
-                    <LoaderCircle className="size-5 animate-spin" />
+                    <Spinner className="size-5" aria-hidden="true" />
                     Proceeding to payment…
                   </motion.div>
                 ) : (

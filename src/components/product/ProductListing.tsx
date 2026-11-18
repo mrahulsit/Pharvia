@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Crown, FileText, PackageSearch, SlidersHorizontal, X } from "lucide-react";
 import { ProductGrid } from "./ProductCard";
 import { buttonVariants } from "@/components/ui/button";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { formLabels, type Product } from "@/data/catalog";
 import { cn } from "@/lib/utils";
 
@@ -90,6 +91,7 @@ export function ProductListing({ products, heading, empty, onClearQuery }: Produ
               </button>
             )}
           </div>
+          {availableForms.length > 0 ? (
           <fieldset className="mt-4">
             <legend className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Product form</legend>
             <div className="space-y-1">
@@ -110,6 +112,9 @@ export function ProductListing({ products, heading, empty, onClearQuery }: Produ
               ))}
             </div>
           </fieldset>
+          ) : (
+            <p className="mt-3 text-sm text-slate-500">No filters for these results.</p>
+          )}
         </div>
 
         <Link
@@ -177,13 +182,17 @@ export function ProductListing({ products, heading, empty, onClearQuery }: Produ
           <ProductGrid products={visible} className="xl:grid-cols-4" />
         ) : (
           empty ?? (
-            <div className="flex flex-col items-center rounded-2xl border border-dashed bg-white px-6 py-16 text-center">
-              <PackageSearch className="size-12 text-slate-300" aria-hidden="true" />
-              <h3 className="mt-4 text-lg font-bold">No matching products</h3>
-              <p className="mt-1 max-w-md text-sm text-slate-600">
-                Try another name, or upload your prescription and we&apos;ll find your medicines for you.
-              </p>
-              <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Empty>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <PackageSearch aria-hidden="true" />
+                </EmptyMedia>
+                <EmptyTitle>No matching products</EmptyTitle>
+                <EmptyDescription>
+                  Try another name, or upload your prescription and we&apos;ll find your medicines for you.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
                 {(forms.length > 0 || onClearQuery) && (
                   <button
                     type="button"
@@ -199,8 +208,8 @@ export function ProductListing({ products, heading, empty, onClearQuery }: Produ
                 <Link to="/upload-prescription" className={buttonVariants()}>
                   <FileText /> Upload prescription
                 </Link>
-              </div>
-            </div>
+              </EmptyContent>
+            </Empty>
           )
         )}
       </div>

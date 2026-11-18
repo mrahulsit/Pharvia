@@ -1,7 +1,8 @@
-﻿import { useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
+import { useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FieldError, Input, Label } from "@/components/ui/input";
@@ -233,7 +234,7 @@ export default function Auth({ mode }: { mode: "login" | "signup" }) {
             </Field>
 
             <Button type="submit" size="lg" className="w-full" disabled={submitting}>
-              {submitting && <LoaderCircle className="animate-spin" />}
+              {submitting && <Spinner />}
               {isSignup ? "Create account" : "Log in"}
             </Button>
           </form>

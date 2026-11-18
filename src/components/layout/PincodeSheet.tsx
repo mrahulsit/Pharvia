@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, LoaderCircle } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -55,7 +56,7 @@ export function PincodeSheet() {
             onChange={(event) => setValue(event.target.value.replace(/\D/g, ""))}
           />
           <Button type="submit" disabled={isLoading} className="min-w-28">
-            {isLoading ? <LoaderCircle className="animate-spin" /> : "Apply"}
+            {isLoading ? <Spinner aria-label="Checking pincode" /> : "Apply"}
           </Button>
         </div>
         <FieldError id="pincode-error">{error}</FieldError>

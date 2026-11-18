@@ -1,21 +1,11 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Copy, Crown, TicketPercent } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowRight, Crown, TicketPercent } from "lucide-react";
 import { PageHeader } from "@/components/layout/Layout";
-import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
 import { Reveal } from "@/components/ui/reveal";
 import { offers, type Offer } from "@/data/site";
 import { usePageTitle } from "@/lib/usePageTitle";
 import promoPharma10 from "@/assets/img/promo-pharma10.webp";
-
-async function copyCode(code: string) {
-  try {
-    await navigator.clipboard.writeText(code);
-    toast.success(`Code ${code} copied`);
-  } catch {
-    toast.info(`Your code is ${code}`);
-  }
-}
 
 export function OfferCard({ offer }: { offer: Offer }) {
   return (
@@ -34,9 +24,7 @@ export function OfferCard({ offer }: { offer: Offer }) {
         <span className="rounded-xl border-2 border-dashed border-brand/50 bg-brand-50 px-3 py-1.5 font-mono text-sm font-bold tracking-wider text-brand-strong">
           {offer.code}
         </span>
-        <Button variant="ghost" size="sm" onClick={() => copyCode(offer.code)}>
-          <Copy /> Copy code
-        </Button>
+        <CopyButton code={offer.code} label="Copy code" />
       </div>
     </Reveal>
   );

@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
@@ -19,6 +19,7 @@ import { Logo } from "./Logo";
 import { DeliveryChip } from "./DeliveryChip";
 import { Sheet } from "@/components/ui/sheet";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { SearchModal, type SearchResult } from "@/components/ui/search-modal";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -65,9 +66,10 @@ function SearchTrigger({ onOpen, className }: { onOpen: () => void; className?: 
           </motion.span>
         </AnimatePresence>
       </span>
-      <kbd className="hidden shrink-0 rounded-md border bg-white px-1.5 py-0.5 font-sans text-[11px] font-medium text-slate-500 lg:inline">
-        Ctrl K
-      </kbd>
+      <KbdGroup className="hidden shrink-0 lg:inline-flex">
+        <Kbd>Ctrl</Kbd>
+        <Kbd>K</Kbd>
+      </KbdGroup>
     </button>
   );
 }

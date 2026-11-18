@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { FileText, LoaderCircle, Upload, X } from "lucide-react";
+import { FileText, Upload, X } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/Layout";
 import { DeliveryChip } from "@/components/layout/DeliveryChip";
@@ -164,7 +165,7 @@ export default function UploadPrescription() {
           <div className="mt-6 flex flex-col gap-4 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
             <DeliveryChip className="sm:max-w-64" />
             <Button type="submit" size="lg" disabled={submitting}>
-              {submitting ? <LoaderCircle className="animate-spin" /> : <Upload />}
+              {submitting ? <Spinner /> : <Upload />}
               Submit prescription
             </Button>
           </div>
