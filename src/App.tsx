@@ -7,13 +7,13 @@ import { AuthProvider } from "@/context/AuthContext";
 import { LocationProvider } from "@/context/LocationContext";
 import { Layout } from "@/components/layout/Layout";
 import { RequireAuth } from "@/components/auth/RequireAuth";
+import { AuthRoute } from "@/components/auth/AuthRoute";
 import Home from "@/pages/Home";
 
 const Medicine = lazy(() => import("@/pages/Medicine"));
 const Healthcare = lazy(() => import("@/pages/Healthcare"));
 const Category = lazy(() => import("@/pages/Category"));
 const Cart = lazy(() => import("@/pages/Cart"));
-const Auth = lazy(() => import("@/pages/Auth"));
 const Plus = lazy(() => import("@/pages/Plus"));
 const Offers = lazy(() => import("@/pages/Offers"));
 const UploadPrescription = lazy(() => import("@/pages/UploadPrescription"));
@@ -39,8 +39,8 @@ export default function App() {
                     </RequireAuth>
                   }
                 />
-                <Route path="login" element={<Auth mode="login" />} />
-                <Route path="signup" element={<Auth mode="signup" />} />
+                <Route path="login" element={<AuthRoute mode="login" />} />
+                <Route path="signup" element={<AuthRoute mode="signup" />} />
                 <Route path="plus" element={<Plus />} />
                 <Route path="offers" element={<Offers />} />
                 <Route path="upload-prescription" element={<UploadPrescription />} />

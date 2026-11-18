@@ -130,12 +130,12 @@ export function LocationModal() {
       >
         <div className="grid md:grid-cols-[1.15fr_1fr]">
           {/* Globe → map */}
-          <div className="relative isolate h-64 overflow-hidden bg-linear-to-br from-brand-50 via-white to-teal-50 sm:h-80 md:h-auto md:min-h-[30rem]">
+          <div className="relative isolate h-72 overflow-hidden bg-linear-to-br from-brand-50 via-white to-teal-50 sm:h-80 md:h-auto md:min-h-[30rem]">
             <div aria-hidden="true" className="absolute -bottom-20 -left-16 -z-10 size-64 rounded-full bg-brand/10 blur-3xl" />
 
             {/* Globe, centred in the panel */}
             <motion.div
-              className="absolute inset-0 grid place-items-center px-6 py-14"
+              className="absolute inset-0 grid place-items-center px-4 pb-4 pt-14 md:px-6 md:pb-14"
               animate={{ opacity: phase === "globe" ? 1 : 0, scale: phase === "globe" ? 1 : 1.6 }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
               aria-hidden={phase !== "globe"}
@@ -163,7 +163,7 @@ export function LocationModal() {
               )}
             </AnimatePresence>
 
-            <div className="pointer-events-none absolute inset-x-4 top-4 z-[1000] flex justify-center">
+            <div className="pointer-events-none absolute left-4 right-14 top-4 z-[1000] flex justify-center md:right-4">
               <StatusPill busy={Boolean(locating) || Boolean(preview && phase === "globe")}>{status}</StatusPill>
             </div>
 

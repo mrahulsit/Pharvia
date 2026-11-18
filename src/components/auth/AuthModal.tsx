@@ -1,8 +1,7 @@
-import { useState, type ChangeEvent, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  ArrowLeft,
   BadgePercent,
   Eye,
   EyeOff,
@@ -17,18 +16,16 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { FieldError, Input, Label } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth, type AuthMode } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { cn, getErrorMessage } from "@/lib/utils";
-import { usePageTitle } from "@/lib/usePageTitle";
 import logo from "@/assets/PHARMACY.png";
 import loginBanner from "@/assets/img/login-banner.webp";
 import signupBanner from "@/assets/img/signup-banner.webp";
-
-type Mode = "login" | "signup";
 
 interface AuthValues {
   username: string;
@@ -37,17 +34,13 @@ interface AuthValues {
   confirm: string;
 }
 
-interface AuthRouteState {
-  from?: string;
-  reason?: "cart" | "checkout";
-  username?: string;
-}
+const emptyValues: AuthValues = { username: "", email: "", password: "", confirm: "" };
 
 /* ------------------------------------------------------------------ */
 /* Validation + password strength                                      */
 /* ------------------------------------------------------------------ */
 
-function validate(mode: Mode, values: AuthValues): Partial<Record<keyof AuthValues, string>> {
+function validate(mode: AuthMode, values: AuthValues): Partial<Record<keyof AuthValues, string>> {
   const errors: Partial<Record<keyof AuthValues, string>> = {};
   const username = values.username.trim();
   if (!username) errors.username = "Username is required.";
@@ -98,9 +91,9 @@ function StrengthMeter({ password }: { password: string }) {
           />
         ))}
       </div>
-      <p className="mt-1.5 flex justify-between text-xs">
-        <span className="text-slate-500">Use 10+ characters with a mix of letters, numbers and symbols.</span>
-        <span className={cn("shrink-0 pl-2 font-semibold", level.text)}>{level.label}</span>
+      <p className="mt-1.5 flex justify-between gap-2 text-xs">
+        <span className="text-slate-500">10+ characters with letters, numbers and symbols is best.</span>
+        <span className={cn("shrink-0 font-semibold", level.text)}>{level.label}</span>
       </p>
     </div>
   );
@@ -145,10 +138,31 @@ function IconInput({
 }: React.ComponentProps<typeof Input> & { icon: LucideIcon; trailing?: ReactNode }) {
   return (
     <div className="relative">
-      <Icon className="pointer-events-none absolute left-3.5 top-1/2 size-[18px] -translate-y-1/2 text-slate-400" aria-hidden="true" />
-      <Input className={cn("h-12 bg-canvas pl-11 focus-visible:bg-white", trailing && "pr-12", className)} {...props} />
+      <Icon
+        className="pointer-events-none absolute left-3.5 top-1/2 size-[18px] -translate-y-1/2 text-slate-400"
+        aria-hidden="true"
+      />
+      <Input className={cn("h-11 bg-canvas pl-11 focus-visible:bg-white", trailing && "pr-12", className)} {...props} />
       {trailing}
     </div>
+  );
+}
+
+/** Height-animated block for the signup-only fields. */
+function Reveal({ show, children }: { show: boolean; children: ReactNode }) {
+  return (
+    <AnimatePresence initial={false}>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          className="overflow-hidden"
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -158,29 +172,29 @@ function IconInput({
 
 const perks = [
   { Icon: ShieldCheck, text: "100% genuine, quality-checked medicines" },
-  { Icon: Truck, text: "Home delivery right to your doorstep" },
-  { Icon: BadgePercent, text: "Offers like PHARMA10 and PLUS member prices" },
-  { Icon: FileText, text: "Order with just a photo of your prescription" },
+  { Icon: Truck, text: "Home delivery to your doorstep" },
+  { Icon: BadgePercent, text: "PHARMA10 offers and PLUS member prices" },
+  { Icon: FileText, text: "Order with a photo of your prescription" },
 ];
 
-function BrandPanel({ mode }: { mode: Mode }) {
+function BrandPanel({ mode }: { mode: AuthMode }) {
   const isSignup = mode === "signup";
   return (
     <motion.aside
       initial={false}
       animate={{ backgroundColor: isSignup ? "#37877a" : "#338751" }}
       transition={{ duration: 0.4 }}
-      className="relative hidden flex-col overflow-hidden text-white lg:flex"
+      className="relative hidden flex-col overflow-hidden text-white md:flex"
     >
-      <Link to="/" className="relative z-10 flex items-center gap-2.5 p-8 pb-0">
+      <div className="relative z-10 flex items-center gap-2.5 p-7 pb-0">
         <img src={logo} alt="" className="size-9 rounded-lg bg-white p-0.5" />
         <span className="leading-none">
           <span className="block font-display text-lg font-extrabold">Pharmacy</span>
           <span className="text-xs text-white/70">at every step</span>
         </span>
-      </Link>
+      </div>
 
-      <div className="relative -my-6 flex-1">
+      <div className="relative -my-4 flex flex-1 items-center justify-center">
         <AnimatePresence mode="wait" initial={false}>
           <motion.img
             key={mode}
@@ -190,20 +204,20 @@ function BrandPanel({ mode }: { mode: Mode }) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.02 }}
             transition={{ duration: 0.35 }}
-            className="mx-auto aspect-square w-full max-w-md object-cover"
+            className="aspect-square w-full max-w-[19rem] object-cover"
           />
         </AnimatePresence>
       </div>
 
-      <div className="relative z-10 p-8 pt-0">
-        <h2 className="text-2xl font-extrabold leading-tight text-white">
+      <div className="relative z-10 p-7 pt-0">
+        <p className="font-display text-xl font-extrabold leading-tight">
           {isSignup ? "Join Pharmacy in under a minute" : "Your health, delivered"}
-        </h2>
-        <ul className="mt-5 space-y-3">
+        </p>
+        <ul className="mt-4 space-y-2.5">
           {perks.map(({ Icon, text }) => (
-            <li key={text} className="flex items-center gap-3 text-sm text-white/90">
-              <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-white/15">
-                <Icon className="size-4" aria-hidden="true" />
+            <li key={text} className="flex items-center gap-2.5 text-sm text-white/90">
+              <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-white/15">
+                <Icon className="size-3.5" aria-hidden="true" />
               </span>
               {text}
             </li>
@@ -215,32 +229,36 @@ function BrandPanel({ mode }: { mode: Mode }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Page                                                                */
+/* Modal                                                               */
 /* ------------------------------------------------------------------ */
 
-export default function Auth({ mode }: { mode: Mode }) {
-  const isSignup = mode === "signup";
-  usePageTitle(isSignup ? "Sign up" : "Log in");
+export function AuthModal() {
   const navigate = useNavigate();
-  const routerLocation = useLocation();
-  const routeState = (routerLocation.state ?? {}) as AuthRouteState;
-  const { login, signup } = useAuth();
+  const { login, signup, authModal, closeAuth, setAuthMode } = useAuth();
   const { count } = useCart();
+  const { open, mode, reason, redirectTo } = authModal;
+  const isSignup = mode === "signup";
 
-  const [values, setValues] = useState<AuthValues>({
-    username: routeState.username ?? "",
-    email: "",
-    password: "",
-    confirm: "",
-  });
+  const [values, setValues] = useState<AuthValues>(emptyValues);
   const [errors, setErrors] = useState<Partial<Record<keyof AuthValues, string>>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [capsLock, setCapsLock] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const usernameRef = useRef<HTMLInputElement>(null);
 
-  // Keep where the visitor was headed when switching between the two tabs.
-  const carryState = { from: routeState.from, reason: routeState.reason };
-  const destination = routeState.from ?? "/";
+  // Fresh form each time the modal opens.
+  useEffect(() => {
+    if (!open) return;
+    setValues(emptyValues);
+    setErrors({});
+    setShowPassword(false);
+    setCapsLock(false);
+  }, [open]);
+
+  const switchMode = (next: AuthMode) => {
+    setAuthMode(next);
+    setErrors({});
+  };
 
   const update = (field: keyof AuthValues) => (event: ChangeEvent<HTMLInputElement>) => {
     setValues((v) => ({ ...v, [field]: event.target.value }));
@@ -250,13 +268,19 @@ export default function Auth({ mode }: { mode: Mode }) {
   const trackCapsLock = (event: KeyboardEvent<HTMLInputElement>) =>
     setCapsLock(event.getModifierState?.("CapsLock") ?? false);
 
+  const finish = (message: string) => {
+    toast.success(message);
+    closeAuth();
+    if (redirectTo) navigate(redirectTo);
+  };
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const nextErrors = validate(mode, values);
     setErrors(nextErrors);
     const firstInvalid = Object.keys(nextErrors)[0];
     if (firstInvalid) {
-      document.getElementById(firstInvalid)?.focus();
+      document.getElementById(`auth-${firstInvalid}`)?.focus();
       return;
     }
 
@@ -268,16 +292,15 @@ export default function Auth({ mode }: { mode: Mode }) {
         try {
           // Sign the new user straight in, like most stores do.
           await login(username, values.password);
-          toast.success(`Welcome to Pharmacy, ${username}!`);
-          navigate(destination, { replace: true });
+          finish(`Welcome to Pharmacy, ${username}!`);
         } catch {
           toast.success("Account created. Please log in.");
-          navigate("/login", { replace: true, state: { ...carryState, username } });
+          setAuthMode("login");
+          setValues({ ...emptyValues, username });
         }
       } else {
         await login(username, values.password);
-        toast.success(`Welcome back, ${username}!`);
-        navigate(destination, { replace: true });
+        finish(`Welcome back, ${username}!`);
       }
     } catch (error) {
       toast.error(getErrorMessage(error, isSignup ? "Signup failed. Please try again." : "Invalid username or password."));
@@ -286,7 +309,7 @@ export default function Auth({ mode }: { mode: Mode }) {
     }
   };
 
-  const describedBy = (field: keyof AuthValues) => (errors[field] ? `${field}-error` : undefined);
+  const describedBy = (field: keyof AuthValues) => (errors[field] ? `auth-${field}-error` : undefined);
 
   const passwordToggle = (
     <button
@@ -301,27 +324,32 @@ export default function Auth({ mode }: { mode: Mode }) {
   );
 
   return (
-    <section className="bg-canvas py-6 sm:py-12">
-      <div className="container-page">
-        <div className="mx-auto grid max-w-5xl overflow-hidden rounded-3xl bg-white shadow-lift ring-1 ring-slate-200/70 lg:grid-cols-[1fr_1.05fr]">
+    <Dialog open={open} onOpenChange={(next) => !next && !submitting && closeAuth()}>
+      <DialogContent
+        className="overflow-hidden p-0 sm:max-w-4xl"
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          usernameRef.current?.focus();
+        }}
+      >
+        <div className="grid md:grid-cols-[0.95fr_1.05fr]">
           <BrandPanel mode={mode} />
 
-          <div className="flex flex-col p-6 sm:p-10">
-            <Link
-              to="/"
-              className="inline-flex w-fit items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900"
-            >
-              <ArrowLeft className="size-4" aria-hidden="true" /> Continue shopping
-            </Link>
+          <div className="flex flex-col p-6 sm:p-8">
+            {/* Compact brand row on phones, where the panel is hidden */}
+            <div className="mb-4 flex items-center gap-2 md:hidden">
+              <img src={logo} alt="" className="size-8" />
+              <span className="font-display font-extrabold text-brand-strong">Pharmacy</span>
+            </div>
 
-            {routeState.reason && (
-              <div className="mt-5 flex items-center gap-3 rounded-2xl border border-brand/20 bg-brand-50 p-3.5 text-sm">
-                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-white text-brand-strong shadow-card">
-                  <ShoppingCart className="size-5" aria-hidden="true" />
+            {reason && (
+              <div className="mb-5 flex items-center gap-3 rounded-2xl border border-brand/20 bg-brand-50 p-3 pr-10 text-sm md:pr-3">
+                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-brand-strong shadow-card">
+                  <ShoppingCart className="size-[18px]" aria-hidden="true" />
                 </span>
                 <div>
                   <p className="font-bold text-slate-900">
-                    {isSignup ? "Sign up" : "Log in"} to view your cart
+                    {isSignup ? "Sign up" : "Log in"} to {reason === "checkout" ? "check out" : "view your cart"}
                   </p>
                   <p className="text-slate-600">
                     {count > 0
@@ -332,49 +360,47 @@ export default function Auth({ mode }: { mode: Mode }) {
               </div>
             )}
 
-            <div className="mt-6 grid grid-cols-2 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="Account">
-              {[
-                { to: "/login", label: "Log in", active: !isSignup },
-                { to: "/signup", label: "Sign up", active: isSignup },
-              ].map((tab) => (
-                <Link
-                  key={tab.to}
-                  to={tab.to}
-                  state={carryState}
-                  role="tab"
-                  aria-selected={tab.active}
-                  replace
-                  className={cn(
-                    "relative rounded-lg py-2.5 text-center text-sm font-semibold transition-colors",
-                    tab.active ? "text-slate-900" : "text-slate-500 hover:text-slate-800"
-                  )}
-                >
-                  {tab.active && (
-                    <motion.span
-                      layoutId="auth-tab"
-                      className="absolute inset-0 rounded-lg bg-white shadow-sm"
-                      transition={{ type: "spring", stiffness: 400, damping: 34 }}
-                    />
-                  )}
-                  <span className="relative">{tab.label}</span>
-                </Link>
-              ))}
+            <div className="mr-10 grid grid-cols-2 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="Account">
+              {(["login", "signup"] as const).map((tab) => {
+                const active = mode === tab;
+                return (
+                  <button
+                    key={tab}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => switchMode(tab)}
+                    className={cn(
+                      "relative rounded-lg py-2 text-center text-sm font-semibold transition-colors",
+                      active ? "text-slate-900" : "text-slate-500 hover:text-slate-800"
+                    )}
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="auth-modal-tab"
+                        className="absolute inset-0 rounded-lg bg-white shadow-sm"
+                        transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                      />
+                    )}
+                    <span className="relative">{tab === "login" ? "Log in" : "Sign up"}</span>
+                  </button>
+                );
+              })}
             </div>
 
-            <h1 className="mt-7 text-2xl font-extrabold text-ink sm:text-3xl">
-              {isSignup ? "Create your account" : "Welcome back"}
-            </h1>
-            <p className="mt-1 text-slate-600">
+            <DialogTitle className="mt-6">{isSignup ? "Create your account" : "Welcome back"}</DialogTitle>
+            <DialogDescription className="mt-1">
               {isSignup
                 ? "Order medicines, upload prescriptions and track deliveries."
                 : "Log in to check out and see your orders."}
-            </p>
+            </DialogDescription>
 
-            <form onSubmit={onSubmit} noValidate className="mt-6 space-y-4">
-              <Field id="username" label="Username" error={errors.username}>
+            <form onSubmit={onSubmit} noValidate className="mt-5 space-y-3.5">
+              <Field id="auth-username" label="Username" error={errors.username}>
                 <IconInput
+                  ref={usernameRef}
                   icon={User}
-                  id="username"
+                  id="auth-username"
                   autoComplete="username"
                   autoCapitalize="none"
                   spellCheck={false}
@@ -386,33 +412,24 @@ export default function Auth({ mode }: { mode: Mode }) {
                 />
               </Field>
 
-              <AnimatePresence initial={false}>
-                {isSignup && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <Field id="email" label="Email" error={errors.email}>
-                      <IconInput
-                        icon={Mail}
-                        id="email"
-                        type="email"
-                        autoComplete="email"
-                        placeholder="you@example.com"
-                        value={values.email}
-                        onChange={update("email")}
-                        invalid={Boolean(errors.email)}
-                        aria-describedby={describedBy("email")}
-                      />
-                    </Field>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <Reveal show={isSignup}>
+                <Field id="auth-email" label="Email" error={errors.email}>
+                  <IconInput
+                    icon={Mail}
+                    id="auth-email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    value={values.email}
+                    onChange={update("email")}
+                    invalid={Boolean(errors.email)}
+                    aria-describedby={describedBy("email")}
+                  />
+                </Field>
+              </Reveal>
 
               <Field
-                id="password"
+                id="auth-password"
                 label="Password"
                 error={errors.password}
                 aside={
@@ -435,7 +452,7 @@ export default function Auth({ mode }: { mode: Mode }) {
               >
                 <IconInput
                   icon={Lock}
-                  id="password"
+                  id="auth-password"
                   type={showPassword ? "text" : "password"}
                   autoComplete={isSignup ? "new-password" : "current-password"}
                   placeholder={isSignup ? "At least 6 characters" : "Your password"}
@@ -451,30 +468,21 @@ export default function Auth({ mode }: { mode: Mode }) {
                 {isSignup && values.password && <StrengthMeter password={values.password} />}
               </Field>
 
-              <AnimatePresence initial={false}>
-                {isSignup && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <Field id="confirm" label="Confirm password" error={errors.confirm}>
-                      <IconInput
-                        icon={Lock}
-                        id="confirm"
-                        type={showPassword ? "text" : "password"}
-                        autoComplete="new-password"
-                        placeholder="Type it again"
-                        value={values.confirm}
-                        onChange={update("confirm")}
-                        invalid={Boolean(errors.confirm)}
-                        aria-describedby={describedBy("confirm")}
-                      />
-                    </Field>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <Reveal show={isSignup}>
+                <Field id="auth-confirm" label="Confirm password" error={errors.confirm}>
+                  <IconInput
+                    icon={Lock}
+                    id="auth-confirm"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    placeholder="Type it again"
+                    value={values.confirm}
+                    onChange={update("confirm")}
+                    invalid={Boolean(errors.confirm)}
+                    aria-describedby={describedBy("confirm")}
+                  />
+                </Field>
+              </Reveal>
 
               {capsLock && (
                 <p className="flex items-center gap-1.5 text-sm font-medium text-amber-700" role="status">
@@ -485,7 +493,7 @@ export default function Auth({ mode }: { mode: Mode }) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-strong text-base font-bold text-white shadow-sm transition hover:bg-brand-strong/90 hover:shadow-lift disabled:opacity-70"
+                className="!mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-strong text-base font-bold text-white shadow-sm transition hover:bg-brand-strong/90 hover:shadow-lift disabled:opacity-70"
               >
                 {submitting && <Spinner aria-hidden="true" />}
                 {submitting ? (isSignup ? "Creating account…" : "Logging in…") : isSignup ? "Create account" : "Log in"}
@@ -493,25 +501,24 @@ export default function Auth({ mode }: { mode: Mode }) {
             </form>
 
             {isSignup && (
-              <p className="mt-4 text-center text-xs leading-relaxed text-slate-500">
+              <p className="mt-3 text-center text-xs leading-relaxed text-slate-500">
                 By creating an account you agree to our Terms &amp; Conditions and Privacy Policy.
               </p>
             )}
 
-            <p className="mt-6 border-t border-slate-100 pt-6 text-center text-sm text-slate-600">
+            <p className="mt-5 border-t border-slate-100 pt-5 text-center text-sm text-slate-600">
               {isSignup ? "Already have an account? " : "New to Pharmacy? "}
-              <Link
-                to={isSignup ? "/login" : "/signup"}
-                state={carryState}
-                replace
+              <button
+                type="button"
+                onClick={() => switchMode(isSignup ? "login" : "signup")}
                 className="font-bold text-brand-strong hover:underline"
               >
                 {isSignup ? "Log in" : "Create an account"}
-              </Link>
+              </button>
             </p>
           </div>
         </div>
-      </div>
-    </section>
+      </DialogContent>
+    </Dialog>
   );
 }

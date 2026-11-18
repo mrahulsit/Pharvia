@@ -1,12 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import axios from "axios";
 
 // Same keys the original app used, so existing sessions keep working.
@@ -17,11 +10,27 @@ export interface AuthUser {
   username: string;
 }
 
+export type AuthMode = "login" | "signup";
+export type AuthReason = "cart" | "checkout";
+
+export interface AuthModalState {
+  open: boolean;
+  mode: AuthMode;
+  /** Why the modal was opened; shown as a banner. */
+  reason?: AuthReason;
+  /** Where to go after a successful login/signup. */
+  redirectTo?: string;
+}
+
 interface AuthContextValue {
   user: AuthUser | null;
   login: (username: string, password: string) => Promise<void>;
   signup: (data: { username: string; email: string; password: string }) => Promise<void>;
   logout: () => void;
+  authModal: AuthModalState;
+  openAuth: (options?: Partial<Omit<AuthModalState, "open">>) => void;
+  closeAuth: () => void;
+  setAuthMode: (mode: AuthMode) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -38,6 +47,7 @@ function readUser(): AuthUser | null {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(readUser);
+  const [authModal, setAuthModal] = useState<AuthModalState>({ open: false, mode: "login" });
 
   /** POST {VITE_BASE_URL}/api/login  { username, password } -> { token } */
   const login = useCallback(async (username: string, password: string) => {
@@ -52,21 +62,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /** POST {VITE_BASE_REGISTER}/api/register  { username, email, password } -> 200 */
-  const signup = useCallback(async ({
-    username,
-    email,
-    password,
-  }: {
-    username: string;
-    email: string;
-    password: string;
-  }) => {
-    await axios.post(`${import.meta.env.VITE_BASE_REGISTER}/api/register`, {
-      username,
-      email,
-      password,
-    });
-  }, []);
+  const signup = useCallback(
+    async ({ username, email, password }: { username: string; email: string; password: string }) => {
+      await axios.post(`${import.meta.env.VITE_BASE_REGISTER}/api/register`, {
+        username,
+        email,
+        password,
+      });
+    },
+    []
+  );
 
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
@@ -74,7 +79,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
-  const value = useMemo(() => ({ user, login, signup, logout }), [user, login, signup, logout]);
+  const openAuth = useCallback((options: Partial<Omit<AuthModalState, "open">> = {}) => {
+    setAuthModal({ open: true, mode: options.mode ?? "login", reason: options.reason, redirectTo: options.redirectTo });
+  }, []);
+  const closeAuth = useCallback(() => setAuthModal((s) => ({ ...s, open: false })), []);
+  const setAuthMode = useCallback((mode: AuthMode) => setAuthModal((s) => ({ ...s, mode })), []);
+
+  const value = useMemo(
+    () => ({ user, login, signup, logout, authModal, openAuth, closeAuth, setAuthMode }),
+    [user, login, signup, logout, authModal, openAuth, closeAuth, setAuthMode]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

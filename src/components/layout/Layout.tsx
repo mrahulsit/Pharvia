@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { LocationModal } from "@/components/location/LocationModal";
+import { AuthModal } from "@/components/auth/AuthModal";
 import { KineticTextLoader } from "@/components/ui/kinetic-text-loader";
 import {
   Breadcrumb,
@@ -71,6 +72,7 @@ export function Layout() {
       </main>
       <SiteFooter />
       <LocationModal />
+      <AuthModal />
     </div>
   );
 }

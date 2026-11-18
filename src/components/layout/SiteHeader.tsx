@@ -158,9 +158,16 @@ function CategoriesMenu() {
 
 function CartButton() {
   const { count } = useCart();
+  const { user, openAuth } = useAuth();
   return (
     <Link
       to="/cart"
+      onClick={(event) => {
+        // Logged-out visitors log in first; they land in the cart afterwards.
+        if (user) return;
+        event.preventDefault();
+        openAuth({ mode: "login", reason: "cart", redirectTo: "/cart" });
+      }}
       className="relative flex h-10 items-center gap-2 rounded-xl px-2.5 text-sm font-semibold text-slate-800 transition hover:bg-slate-100"
       aria-label={`Cart, ${count} ${count === 1 ? "item" : "items"}`}
     >
@@ -186,16 +193,17 @@ function CartButton() {
 }
 
 function AccountButton() {
-  const { user, logout } = useAuth();
+  const { user, logout, openAuth } = useAuth();
   if (!user) {
     return (
-      <Link
-        to="/login"
+      <button
+        type="button"
+        onClick={() => openAuth({ mode: "login" })}
         className="flex h-10 items-center gap-2 rounded-xl px-2.5 text-sm font-semibold text-slate-800 transition hover:bg-slate-100"
       >
         <User className="size-5" aria-hidden="true" />
         <span className="hidden sm:inline">Log in</span>
-      </Link>
+      </button>
     );
   }
   return (
@@ -218,7 +226,7 @@ function AccountButton() {
 /* ------------------------------------------------------------------ */
 
 function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { user, logout } = useAuth();
+  const { user, logout, openAuth } = useAuth();
   return (
     <Sheet open={open} onClose={onClose} side="left" title="Menu">
       <div className="mb-6 rounded-2xl bg-brand-50 p-4">
@@ -240,9 +248,16 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
           <>
             <p className="font-semibold">Welcome to Pharmacy</p>
             <p className="mt-0.5 text-sm text-slate-600">Log in to keep your cart and check out faster.</p>
-            <Link to="/login" onClick={onClose} className={cn(buttonVariants({ size: "sm" }), "mt-3 w-full")}>
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                openAuth({ mode: "login" });
+              }}
+              className={cn(buttonVariants({ size: "sm" }), "mt-3 w-full")}
+            >
               <User /> Log in or sign up
-            </Link>
+            </button>
           </>
         )}
       </div>
