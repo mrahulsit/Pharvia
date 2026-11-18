@@ -188,13 +188,15 @@ bcrypt, accessibility (WCAG, ARIA), responsive design, ESLint, Git.
 - Frontend: **59** TypeScript/TSX source files, about **8,400** lines. **24** reusable UI components.
   **10** pages, all lazy-loaded except Home, plus legacy-URL redirects.
 - Content: 10 medicines, 8 categories, 7 home tiles, 2 offer codes (PHARMA10, STAYHOME).
-- Repo layout: `Client/` (frontend, own git repo, work on branch `ui-rebuild`), `Server/` (Express API),
-  `BACKEND_TODO.md` (backend roadmap, in the project root next to `Client/`).
+- Repo: **github.com/mrahulsit/Pharvia** (renamed from `Pharmacy-App`; GitHub redirects the old URL).
+  Layout: `Client/` (frontend), `Server/` (Express API: `server.js` entry plus modular routes being wired in),
+  `BACKEND_TODO.md` (backend roadmap), MIT `LICENSE`. Started July 2024 (original JSX/Bootstrap version,
+  with collaborators), rebuilt Nov 2026.
 
 ## Links (fill in)
 
 - Live demo: _not deployed yet_
-- Source code: _add the GitHub URL_
+- Source code: https://github.com/mrahulsit/Pharvia
 - Screenshots / demo video: _record the globe → map pincode flow; it's the most memorable 15 seconds_
 
 ## Assets that still show the old name
