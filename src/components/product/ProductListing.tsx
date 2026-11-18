@@ -1,19 +1,39 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { Crown, FileText, PackageSearch, SlidersHorizontal, X } from "lucide-react";
+import {
+  ArrowDownAZ,
+  ArrowDownWideNarrow,
+  ArrowUpNarrowWide,
+  Crown,
+  FileText,
+  PackageSearch,
+  SlidersHorizontal,
+  Sparkles,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { ProductGrid } from "./ProductCard";
 import { buttonVariants } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { formLabels, type Product } from "@/data/catalog";
 import { cn } from "@/lib/utils";
 
 type SortKey = "relevance" | "price-asc" | "price-desc" | "name";
 
-const sortOptions: { value: SortKey; label: string }[] = [
-  { value: "relevance", label: "Relevance" },
-  { value: "price-asc", label: "Price: low to high" },
-  { value: "price-desc", label: "Price: high to low" },
-  { value: "name", label: "Name: A to Z" },
+const sortOptions: { value: SortKey; label: string; Icon: LucideIcon }[] = [
+  { value: "relevance", label: "Relevance", Icon: Sparkles },
+  { value: "price-asc", label: "Price: low to high", Icon: ArrowUpNarrowWide },
+  { value: "price-desc", label: "Price: high to low", Icon: ArrowDownWideNarrow },
+  { value: "name", label: "Name: A to Z", Icon: ArrowDownAZ },
 ];
 
 const sorters: Record<SortKey, ((a: Product, b: Product) => number) | null> = {
@@ -145,20 +165,27 @@ export function ProductListing({ products, heading, empty, onClearQuery }: Produ
               Showing {visible.length} of {products.length} {products.length === 1 ? "product" : "products"}
             </p>
           </div>
-          <label className="flex items-center gap-2 text-sm text-slate-600">
-            <span className="hidden sm:inline">Sort by</span>
-            <select
-              value={sort}
-              onChange={(event) => setSort(event.target.value as SortKey)}
-              className="h-10 rounded-xl border border-slate-200 bg-white px-3 pr-8 text-sm font-semibold text-slate-900 focus:border-brand-strong focus:outline-none"
-            >
-              {sortOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div className="flex items-center gap-2 text-sm text-slate-600">
+            <span id="sort-label" className="hidden sm:inline">
+              Sort by
+            </span>
+            <Select value={sort} onValueChange={(value) => setSort(value as SortKey)}>
+              <SelectTrigger aria-labelledby="sort-label" className="w-[12.5rem]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent align="end">
+                <SelectGroup>
+                  <SelectLabel>Sort products</SelectLabel>
+                  {sortOptions.map(({ value, label, Icon }) => (
+                    <SelectItem key={value} value={value}>
+                      <Icon aria-hidden="true" />
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {availableForms.length > 1 && <div className="mb-5 lg:hidden">{filterChips}</div>}
