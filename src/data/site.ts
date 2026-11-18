@@ -1,3 +1,9 @@
+/** Brand name and tagline: change them here. */
+export const brand = {
+  name: "Pharvia",
+  tagline: "at every step",
+} as const;
+
 import qlMaternal from "@/assets/img/ql-maternal.webp";
 import qlMedicines from "@/assets/img/ql-medicines.webp";
 import qlBlogs from "@/assets/img/ql-blogs.webp";

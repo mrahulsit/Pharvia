@@ -246,7 +246,7 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
           </div>
         ) : (
           <>
-            <p className="font-semibold">Welcome to Pharmacy</p>
+            <p className="font-semibold">Welcome to Pharvia</p>
             <p className="mt-0.5 text-sm text-slate-600">Log in to keep your cart and check out faster.</p>
             <button
               type="button"

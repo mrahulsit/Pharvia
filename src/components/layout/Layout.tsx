@@ -45,7 +45,7 @@ export function PageLoader() {
           transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
         />
         <KineticTextLoader
-          text="Pharmacy"
+          text="Pharvia"
           className="scale-50 sm:scale-60"
           aria-hidden="true"
         />

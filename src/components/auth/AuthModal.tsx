@@ -189,7 +189,7 @@ function BrandPanel({ mode }: { mode: AuthMode }) {
       <div className="relative z-10 flex items-center gap-2.5 p-7 pb-0">
         <img src={logo} alt="" className="size-9 rounded-lg bg-white p-0.5" />
         <span className="leading-none">
-          <span className="block font-display text-lg font-extrabold">Pharmacy</span>
+          <span className="block font-display text-lg font-extrabold">Pharvia</span>
           <span className="text-xs text-white/70">at every step</span>
         </span>
       </div>
@@ -211,7 +211,7 @@ function BrandPanel({ mode }: { mode: AuthMode }) {
 
       <div className="relative z-10 p-7 pt-0">
         <p className="font-display text-xl font-extrabold leading-tight">
-          {isSignup ? "Join Pharmacy in under a minute" : "Your health, delivered"}
+          {isSignup ? "Join Pharvia in under a minute" : "Your health, delivered"}
         </p>
         <ul className="mt-4 space-y-2.5">
           {perks.map(({ Icon, text }) => (
@@ -292,7 +292,7 @@ export function AuthModal() {
         try {
           // Sign the new user straight in, like most stores do.
           await login(username, values.password);
-          finish(`Welcome to Pharmacy, ${username}!`);
+          finish(`Welcome to Pharvia, ${username}!`);
         } catch {
           toast.success("Account created. Please log in.");
           setAuthMode("login");
@@ -339,7 +339,7 @@ export function AuthModal() {
             {/* Compact brand row on phones, where the panel is hidden */}
             <div className="mb-4 flex items-center gap-2 md:hidden">
               <img src={logo} alt="" className="size-8" />
-              <span className="font-display font-extrabold text-brand-strong">Pharmacy</span>
+              <span className="font-display font-extrabold text-brand-strong">Pharvia</span>
             </div>
 
             {reason && (
@@ -507,7 +507,7 @@ export function AuthModal() {
             )}
 
             <p className="mt-5 border-t border-slate-100 pt-5 text-center text-sm text-slate-600">
-              {isSignup ? "Already have an account? " : "New to Pharmacy? "}
+              {isSignup ? "Already have an account? " : "New to Pharvia? "}
               <button
                 type="button"
                 onClick={() => switchMode(isSignup ? "login" : "signup")}

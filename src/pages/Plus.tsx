@@ -124,7 +124,7 @@ function MembershipCard() {
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             <img src={logo} alt="" className="size-8 rounded-lg bg-white p-0.5" />
-            <span className="font-display text-lg font-extrabold">Pharmacy</span>
+            <span className="font-display text-lg font-extrabold">Pharvia</span>
           </div>
           <Crown className="size-8" />
         </div>

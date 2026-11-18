@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { homeTitle } from "@/lib/usePageTitle";
 import { Hero } from "@/components/home/Hero";
 import {
   CategoryGrid,
@@ -14,7 +15,7 @@ import {
 
 export default function Home() {
   useEffect(() => {
-    document.title = "Pharmacy — at every step";
+    document.title = homeTitle;
   }, []);
 
   return (

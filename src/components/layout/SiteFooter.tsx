@@ -251,7 +251,7 @@ export function SiteFooter() {
           </p>
           <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-5 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
             <span>
-              &copy; {new Date().getFullYear()} Pharmacy. All rights reserved. ·{" "}
+              &copy; {new Date().getFullYear()} Pharvia. All rights reserved. ·{" "}
               <span className="font-medium text-brand-strong">at every step</span>
             </span>
             <button

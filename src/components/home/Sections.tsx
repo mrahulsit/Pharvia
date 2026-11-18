@@ -497,7 +497,7 @@ export function WhyUs() {
       <div className="rounded-3xl bg-ink px-6 py-10 text-white sm:px-10 sm:py-12">
         <div className="grid gap-10 lg:grid-cols-[1fr_2fr] lg:items-center">
           <div>
-            <p className="text-sm font-bold text-brand">Why Pharmacy</p>
+            <p className="text-sm font-bold text-brand">Why Pharvia</p>
             <h2 className="mt-1 text-2xl font-bold text-white sm:text-3xl">A one-stop shop for your healthcare needs</h2>
             <p className="mt-3 text-sm leading-relaxed text-white/70">
               Buy medicines online at affordable prices from the comfort of your home and get them delivered

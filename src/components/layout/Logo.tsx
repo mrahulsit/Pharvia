@@ -1,6 +1,7 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import logo from "@/assets/PHARMACY.png";
 import { cn } from "@/lib/utils";
+import { brand } from "@/data/site";
 
 interface LogoProps {
   className?: string;
@@ -9,7 +10,7 @@ interface LogoProps {
 
 export function Logo({ className, light = false }: LogoProps) {
   return (
-    <Link to="/" className={cn("flex items-center gap-2.5", className)} aria-label="Pharmacy home">
+    <Link to="/" className={cn("flex items-center gap-2.5", className)} aria-label={`${brand.name} home`}>
       <img src={logo} alt="" width="40" height="40" className="size-10 shrink-0" />
       <span className="flex flex-col leading-none">
         <span
@@ -18,10 +19,10 @@ export function Logo({ className, light = false }: LogoProps) {
             light ? "text-white" : "text-brand-strong"
           )}
         >
-          Pharmacy
+          {brand.name}
         </span>
         <span className={cn("text-xs font-medium", light ? "text-white/70" : "text-slate-500")}>
-          at every step
+          {brand.tagline}
         </span>
       </span>
     </Link>
