@@ -4,6 +4,7 @@ import {
   ArrowDownAZ,
   ArrowDownWideNarrow,
   ArrowUpNarrowWide,
+  ChevronDown,
   Crown,
   FileText,
   PackageSearch,
@@ -16,14 +17,13 @@ import { ProductGrid } from "./ProductCard";
 import { buttonVariants } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { formLabels, type Product } from "@/data/catalog";
 import { cn } from "@/lib/utils";
 
@@ -65,6 +65,9 @@ export function ProductListing({ products, heading, empty, onClearQuery }: Produ
     const sorter = sorters[sort];
     return sorter ? [...filtered].sort(sorter) : filtered;
   }, [products, forms, sort]);
+
+  const activeSort = sortOptions.find((option) => option.value === sort) ?? sortOptions[0];
+  const ActiveSortIcon = activeSort.Icon;
 
   const toggleForm = (form: string) =>
     setForms((current) => (current.includes(form) ? current.filter((f) => f !== form) : [...current, form]));
@@ -169,22 +172,32 @@ export function ProductListing({ products, heading, empty, onClearQuery }: Produ
             <span id="sort-label" className="hidden sm:inline">
               Sort by
             </span>
-            <Select value={sort} onValueChange={(value) => setSort(value as SortKey)}>
-              <SelectTrigger aria-labelledby="sort-label" className="w-[12.5rem]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent align="end">
-                <SelectGroup>
-                  <SelectLabel>Sort products</SelectLabel>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                aria-labelledby="sort-label sort-value"
+                className="group flex h-10 w-[12.5rem] items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-900 shadow-card transition hover:border-slate-300 focus-visible:border-brand-strong focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/15 data-[state=open]:border-brand-strong data-[state=open]:ring-4 data-[state=open]:ring-brand/15"
+              >
+                <span id="sort-value" className="flex min-w-0 items-center gap-2">
+                  <ActiveSortIcon className="size-4 shrink-0 text-slate-400" aria-hidden="true" />
+                  <span className="truncate">{activeSort.label}</span>
+                </span>
+                <ChevronDown
+                  className="size-4 shrink-0 text-slate-400 transition-transform duration-200 group-data-[state=open]:rotate-180 group-data-[state=open]:text-brand-strong"
+                  aria-hidden="true"
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Sort products</DropdownMenuLabel>
+                <DropdownMenuRadioGroup value={sort} onValueChange={(value) => setSort(value as SortKey)}>
                   {sortOptions.map(({ value, label, Icon }) => (
-                    <SelectItem key={value} value={value}>
+                    <DropdownMenuRadioItem key={value} value={value}>
                       <Icon aria-hidden="true" />
                       {label}
-                    </SelectItem>
+                    </DropdownMenuRadioItem>
                   ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
