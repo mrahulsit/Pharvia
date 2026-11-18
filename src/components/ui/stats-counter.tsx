@@ -1,4 +1,3 @@
-﻿"use client";
 import { useEffect, useRef, useState } from "react";
 import { useInView, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";

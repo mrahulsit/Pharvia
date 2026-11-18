@@ -160,7 +160,7 @@ export function Hero() {
             <AnimatedSearch />
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
-            <LiquidButton size="lg" onClick={() => navigate("/upload-prescription")}>
+            <LiquidButton variant="brand" className="min-h-12 px-7 text-base" onClick={() => navigate("/upload-prescription")}>
               <span className="inline-flex items-center gap-2">
                 <FileText className="size-4" /> Upload prescription
               </span>

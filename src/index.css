@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* The site is light-only: `dark:` styles (from Vengeance components) apply only under an explicit .dark class,
+   not when the visitor's OS is in dark mode. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Plus Jakarta Sans Variable", "Inter Variable", ui-sans-serif,

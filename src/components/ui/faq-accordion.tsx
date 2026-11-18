@@ -1,4 +1,3 @@
-﻿"use client";
 import { useState } from "react";
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
@@ -51,8 +50,8 @@ export function FaqAccordion({
                   "flex flex-row items-center justify-start w-full min-h-[60px] py-4 relative m-0 px-4 pl-14 cursor-pointer",
                   "border-l-[6px] md:border-l-[10px] transition-colors duration-200 text-left outline-none text-base md:text-lg",
                   isActive 
-                    ? "border-l-neutral-900 dark:border-l-neutral-100 bg-neutral-100/50 dark:bg-neutral-800/30 text-neutral-900 dark:text-neutral-100 font-semibold" 
-                    : "border-l-neutral-300 dark:border-l-neutral-700 bg-transparent text-neutral-600 dark:text-neutral-400 hover:border-l-neutral-500 dark:hover:border-l-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-900/50"
+                    ? "border-l-brand-strong dark:border-l-neutral-100 bg-brand-50 dark:bg-neutral-800/30 text-neutral-900 dark:text-neutral-100 font-semibold" 
+                    : "border-l-brand-soft dark:border-l-neutral-700 bg-transparent text-neutral-600 dark:text-neutral-400 hover:border-l-brand dark:hover:border-l-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-900/50"
                 )}
                 onClick={() => toggleItem(index)}
                 aria-expanded={isActive}

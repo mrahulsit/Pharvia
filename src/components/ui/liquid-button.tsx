@@ -1,5 +1,4 @@
 /* eslint-disable react-refresh/only-export-components */
-"use client";
 import {
   useId,
   useRef,
@@ -17,12 +16,12 @@ import { cn } from "@/lib/utils";
 
 export const liquidButtonVariants = cva(
   [
-    "group relative isolation-isolate inline-flex items-center justify-center overflow-hidden",
+    "group relative isolate inline-flex items-center justify-center overflow-hidden",
     "rounded-full font-medium tracking-tight whitespace-nowrap select-none",
-    "cursor-pointer -webkit-tap-highlight-color-transparent",
+    "cursor-pointer [-webkit-tap-highlight-color:transparent]",
     "transition-[transform,box-shadow,border-color] duration-150 ease-out",
     "hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-14px_rgba(0,0,0,0.38)]",
-    "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#615fff]",
+    "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-strong",
     "disabled:pointer-events-none disabled:opacity-50",
   ],
   {
@@ -30,6 +29,8 @@ export const liquidButtonVariants = cva(
       variant: {
         default:
           "[--liquid-fill:#111111] dark:[--liquid-fill:#ffffff] [--liquid-text:#111111] dark:[--liquid-text:#ffffff] [--liquid-active-text:#ffffff] dark:[--liquid-active-text:#111111] [--liquid-border:#111111] dark:[--liquid-border:#ffffff] border-[1.5px] border-[var(--liquid-border)] text-[var(--liquid-text)] bg-transparent",
+        brand:
+          "[--liquid-fill:var(--color-accent)] [--liquid-text:#ffffff] [--liquid-active-text:#ffffff] [--liquid-border:var(--color-brand-strong)] border-[1.5px] border-[var(--liquid-border)] text-[var(--liquid-text)] bg-brand-strong",
         dark:
           "[--liquid-fill:#ffffff] [--liquid-text:#ffffff] [--liquid-active-text:#111111] [--liquid-border:#ffffff] border-[1.5px] border-[var(--liquid-border)] text-[var(--liquid-text)] bg-transparent",
         destructive:

@@ -123,7 +123,7 @@ export default function Cart() {
                   </motion.div>
                 ) : (
                   <motion.div key="cta" exit={{ opacity: 0 }}>
-                    <LiquidButton size="lg" className="mt-6 w-full" onClick={handleCheckout}>
+                    <LiquidButton variant="brand" size="lg" className="mt-6 w-full" onClick={handleCheckout}>
                       Proceed to checkout
                     </LiquidButton>
                   </motion.div>
