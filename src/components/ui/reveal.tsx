@@ -47,15 +47,11 @@ export function SectionHeading({
   className,
 }: SectionHeadingProps) {
   return (
-    <div className={`mb-8 flex flex-wrap items-end justify-between gap-4 ${className ?? ""}`}>
+    <div className={`mb-5 flex flex-wrap items-end justify-between gap-x-4 gap-y-2 ${className ?? ""}`}>
       <div className="max-w-2xl">
-        {eyebrow && (
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-accent">
-            {eyebrow}
-          </p>
-        )}
-        <h2 className="text-2xl font-bold sm:text-3xl">{title}</h2>
-        {description && <p className="mt-2 text-slate-600">{description}</p>}
+        {eyebrow && <p className="mb-1 text-sm font-bold text-accent">{eyebrow}</p>}
+        <h2 className="text-xl font-bold sm:text-2xl">{title}</h2>
+        {description && <p className="mt-1 text-sm text-slate-600 sm:text-base">{description}</p>}
       </div>
       {action}
     </div>

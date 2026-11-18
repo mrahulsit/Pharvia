@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ArrowRight, Copy, Crown, TicketPercent } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/layout/Layout";
@@ -55,7 +55,7 @@ export default function Offers() {
         <Reveal className="overflow-hidden rounded-3xl shadow-soft">
           <img
             src={promoPharma10}
-            alt="Buy health care products: flat 10% off on any medicine plus guaranteed benefits up to â‚¹1000 on any order. Code PHARMA10."
+            alt="Buy health care products: flat 10% off on any medicine plus guaranteed benefits up to ₹1000 on any order. Code PHARMA10."
             width="800"
             height="400"
             className="w-full"

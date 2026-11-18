@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, LoaderCircle, MapPin, ShoppingBag, Trash2 } from "lucide-react";
+import { CheckCircle2, Crown, LoaderCircle, MapPin, ShoppingBag, Trash2 } from "lucide-react";
+import { plusPrice } from "@/data/catalog";
 import { PageHeader } from "@/components/layout/Layout";
 import { ProductIcon, QuantityStepper } from "@/components/product/ProductCard";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -108,6 +109,17 @@ export default function Cart() {
                   </dd>
                 </div>
               </dl>
+
+              <Link
+                to="/plus"
+                className="mt-5 flex items-center gap-2 rounded-xl bg-plus-soft px-3 py-2.5 text-sm text-slate-700 transition hover:ring-1 hover:ring-plus/30"
+              >
+                <Crown className="size-4 shrink-0 text-plus" aria-hidden="true" />
+                <span>
+                  Save <strong className="text-plus">{formatPrice(subtotal - plusPrice(subtotal))}</strong> on this
+                  order with PLUS
+                </span>
+              </Link>
 
               <AnimatePresence mode="wait" initial={false}>
                 {checkingOut ? (

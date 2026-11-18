@@ -12,6 +12,9 @@ export interface Category {
   title: string;
   image: string;
   description: string;
+  /** Pastel tile + accent classes (literal so Tailwind picks them up). */
+  tint: string;
+  accent: string;
 }
 
 /** The 8 "Shop by category" entries from the original CarouselShop. */
@@ -21,48 +24,64 @@ export const categories: Category[] = [
     title: "Must Haves",
     image: catMusthave,
     description: "Everyday medicines worth keeping in every home.",
+    tint: "bg-emerald-50",
+    accent: "text-emerald-800",
   },
   {
     slug: "elderly-care",
     title: "Elderly Care",
     image: catElderly,
     description: "Support for joints, mobility and daily wellbeing.",
+    tint: "bg-amber-50",
+    accent: "text-amber-800",
   },
   {
     slug: "personal-care",
     title: "Personal Care",
     image: catPersonal,
     description: "Hygiene and grooming essentials.",
+    tint: "bg-sky-50",
+    accent: "text-sky-800",
   },
   {
     slug: "skin-care",
     title: "Skin Care",
     image: catSkin,
     description: "Cleansers, moisturisers and sun care.",
+    tint: "bg-rose-50",
+    accent: "text-rose-800",
   },
   {
     slug: "mother-baby",
     title: "Mother & Baby Care",
     image: catMotherBaby,
     description: "Maternal care and baby essentials.",
+    tint: "bg-violet-50",
+    accent: "text-violet-800",
   },
   {
     slug: "fitness",
     title: "Fitness Supplements",
     image: catFitness,
     description: "Protein, nutrition and fitness supplements.",
+    tint: "bg-orange-50",
+    accent: "text-orange-800",
   },
   {
     slug: "ayurvedic",
     title: "Ayurvedic Care",
     image: catAyurvedic,
     description: "Traditional Ayurvedic remedies and wellness.",
+    tint: "bg-lime-50",
+    accent: "text-lime-800",
   },
   {
     slug: "diabetic-care",
     title: "Diabetic Care",
     image: catDiabetic,
     description: "Diabetes management products and nutrition.",
+    tint: "bg-cyan-50",
+    accent: "text-cyan-800",
   },
 ];
 
@@ -92,6 +111,17 @@ export const products: Product[] = [
   { id: "albuterol-inhaler", name: "Albuterol Inhaler", description: "90mcg inhaler", price: 1200, unit: "per inhaler", form: "inhaler", category: "musthave" },
   { id: "cetirizine", name: "Cetirizine", description: "10mg tablets", price: 60, unit: "per 10 units", form: "tablet", category: "musthave" },
 ];
+
+/** Human labels for product forms, used in filters and cards. */
+export const formLabels: Record<string, string> = {
+  tablet: "Tablets",
+  capsule: "Capsules",
+  inhaler: "Inhalers",
+};
+
+/** PLUS members get 10% off medicines (benefit printed on the PLUS banner). */
+export const PLUS_DISCOUNT = 0.1;
+export const plusPrice = (price: number) => Math.round(price * (1 - PLUS_DISCOUNT) * 100) / 100;
 
 export function searchProducts(query: string): Product[] {
   const q = query.trim().toLowerCase();

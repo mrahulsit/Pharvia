@@ -4,6 +4,7 @@ import {
   AppSection,
   CategoryGrid,
   FaqSection,
+  MustHaveRail,
   PlusBanner,
   ProcessSection,
   PromoSection,
@@ -20,13 +21,14 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <TrustStrip />
       <QuickLinks />
       <PromoSection />
-      <ProcessSection />
+      <TrustStrip />
+      <MustHaveRail />
       <CategoryGrid />
-      <WhyUs />
+      <ProcessSection />
       <PlusBanner />
+      <WhyUs />
       <AppSection />
       <FaqSection />
     </>

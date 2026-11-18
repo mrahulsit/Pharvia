@@ -48,7 +48,7 @@ export function Layout() {
       </a>
       <ScrollToTop />
       <SiteHeader />
-      <main id="main" className="flex-1">
+      <main id="main" className="flex-1 pb-4">
         <Suspense fallback={<PageLoader />}>
           <Outlet />
         </Suspense>
@@ -74,14 +74,10 @@ interface PageHeaderProps {
 /** Breadcrumb + title block used at the top of inner pages. */
 export function PageHeader({ crumbs = [], title, description, children }: PageHeaderProps) {
   return (
-    <section className="relative overflow-hidden border-b bg-surface">
-      <div
-        className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-brand/10 blur-3xl"
-        aria-hidden="true"
-      />
-      <div className="container-page relative py-8 sm:py-10">
+    <section className="border-b border-slate-200/80 bg-white">
+      <div className="container-page py-5 sm:py-7">
         <nav aria-label="Breadcrumb">
-          <ol className="flex flex-wrap items-center gap-1 text-sm text-slate-500">
+          <ol className="flex flex-wrap items-center gap-1 text-xs text-slate-500 sm:text-sm">
             <li>
               <Link to="/" className="hover:text-brand-strong">
                 Home
@@ -103,8 +99,8 @@ export function PageHeader({ crumbs = [], title, description, children }: PageHe
             ))}
           </ol>
         </nav>
-        <h1 className="mt-3 text-3xl font-extrabold sm:text-4xl">{title}</h1>
-        {description && <p className="mt-2 max-w-2xl text-slate-600">{description}</p>}
+        <h1 className="mt-2 text-2xl font-extrabold text-ink sm:text-3xl">{title}</h1>
+        {description && <p className="mt-1 max-w-2xl text-slate-600">{description}</p>}
         {children}
       </div>
     </section>
