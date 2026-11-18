@@ -105,7 +105,7 @@ function CategoriesMenu() {
         aria-haspopup="true"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "flex h-11 items-center gap-2 border-b-2 pr-4 text-sm font-semibold transition-colors",
+          "flex h-11 shrink-0 items-center gap-2 whitespace-nowrap border-b-2 pr-4 text-sm font-semibold transition-colors",
           open ? "border-brand-strong text-brand-strong" : "border-transparent text-slate-800 hover:text-brand-strong"
         )}
       >

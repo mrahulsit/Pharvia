@@ -387,11 +387,7 @@ function PlusFaq() {
           <h2 className="text-2xl font-bold sm:text-3xl">PLUS questions</h2>
           <p className="mt-2 text-slate-600">Everything you need to know about the membership.</p>
         </div>
-        <FaqAccordion
-          items={plusFaqs}
-          title=""
-          className="max-w-none font-sans text-slate-900 [&_button]:min-h-[56px] [&_span]:text-[15px]"
-        />
+        <FaqAccordion items={plusFaqs} tone="plus" />
       </div>
     </section>
   );

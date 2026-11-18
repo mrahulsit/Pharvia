@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
@@ -6,7 +6,6 @@ import {
   BadgePercent,
   BellRing,
   Check,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Crown,
@@ -20,6 +19,7 @@ import {
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Reveal, SectionHeading } from "@/components/ui/reveal";
+import { FaqAccordion, type FaqItem } from "@/components/ui/faq-accordion";
 import { ProductRail } from "@/components/product/ProductCard";
 import { categories, products } from "@/data/catalog";
 import { plusBenefits, processSteps, quickLinks, type ProcessStepIcon } from "@/data/site";
@@ -520,28 +520,33 @@ export function WhyUs() {
 /* ------------------------------------------------------------------ */
 
 /** New copy for owner review — answers describe only existing app behaviour. */
-const faqItems = [
+const faqItems: FaqItem[] = [
   {
+    topic: "Ordering",
     question: "How do I order medicines?",
     answer:
       "Search for a medicine, add it to your cart, then check out. You can also upload a photo of your prescription and we'll confirm your medicines by call before delivering.",
   },
   {
+    topic: "Offers",
     question: "Is there a discount for first orders?",
     answer:
       "Yes. Use code PHARMA10 for flat 10% off on any medicine, or STAYHOME for 20% off plus 20% cashback on your first order. Offers are listed on the Offers page.",
   },
   {
+    topic: "Delivery",
     question: "How does delivery work?",
     answer:
       "Set your pincode to check delivery to your area. Once an order is placed, we confirm your medicines by call and deliver them to your doorstep.",
   },
   {
+    topic: "Offers",
     question: "What is PLUS?",
     answer:
       "PLUS is our membership programme with 10% off medicines, free delivery, unlimited offers and member-only deals as they launch.",
   },
   {
+    topic: "Ordering",
     question: "Do I need an account to order?",
     answer:
       "You can browse without an account, but logging in lets you keep a cart and check out faster. Create an account with your email and a password.",
@@ -551,53 +556,28 @@ const faqItems = [
 export function FaqSection() {
   return (
     <section className="container-page mt-16" aria-label="Frequently asked questions">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-extrabold sm:text-4xl text-ink">Frequently asked questions</h2>
-          <p className="mt-4 text-lg text-slate-500">
+      <div className="mx-auto max-w-3xl">
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl font-extrabold text-ink sm:text-3xl">Frequently asked questions</h2>
+          <p className="mt-2 text-slate-500">
             Everything you need to know about ordering, delivery, and your PLUS membership.
           </p>
         </div>
 
-        <div className="space-y-4">
-          {faqItems.map((item, index) => (
-            <Reveal key={index} delay={index * 0.05}>
-              <div
-                className={cn(
-                  "relative border rounded-2xl bg-white p-4 shadow-sm transition-all hover:border-brand/20",
-                  "dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-brand/30"
-                )}
-              >
-                <button
-                  type="button"
-                  className="flex items-center justify-between w-full text-left px-0 py-3"
-                  onClick={() => {}}
-                  aria-expanded={false}
-                >
-                  <span className="text-lg font-bold text-ink">
-                    Q{index + 1}
-                  </span>
-                  <h3 className="flex-1 mx-4 text-lg font-semibold text-ink">{item.question}</h3>
-                  <ChevronDown className="size-5 shrink-0 text-slate-400 transition-transform duration-200" aria-hidden="true" />
-                </button>
-                <div className="border-t border-slate-100 dark:border-neutral-800 mt-3 pt-3 text-slate-600 leading-relaxed dark:text-slate-400">
-                  {item.answer}
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <FaqAccordion items={faqItems} />
 
-        <div className="mt-16 rounded-3xl bg-brand px-8 py-12 text-center text-white">
-          <h3 className="text-xl font-bold sm:text-2xl">Still have questions?</h3>
-          <p className="mt-3 text-white/90">
-            We&apos;re here to help. Email us at support@pharmacy.example or visit the Help &amp; Support page.
-          </p>
+        <div className="mt-8 flex flex-col items-center gap-4 rounded-2xl bg-brand-soft px-6 py-6 text-center sm:flex-row sm:justify-between sm:text-left">
+          <div>
+            <h3 className="text-lg font-bold text-ink">Still have questions?</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              We&apos;re here to help. Email us at support@pharmacy.example or visit the Help &amp; Support page.
+            </p>
+          </div>
           <Link
             to="/healthcare"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white px-6 py-2.5 text-sm font-semibold text-brand hover:bg-brand/90 transition-colors"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand-strong px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-strong/90"
           >
-            Contact support <ArrowRight className="size-4" />
+            Contact support <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
       </div>

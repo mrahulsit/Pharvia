@@ -1,93 +1,162 @@
-import { useState } from "react";
-import type { HTMLAttributes } from "react";
+import { useId, useMemo, useRef, useState, type HTMLAttributes, type KeyboardEvent } from "react";
+import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface FaqItem {
   question: string;
   answer: string;
+  /** Optional topic; when any item has one, filter chips appear above the list. */
+  topic?: string;
 }
 
-export interface FaqAccordionProps extends HTMLAttributes<HTMLDivElement> {
+export interface FaqAccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
   items?: FaqItem[];
+  /** Kept for backwards compatibility; headings live in the surrounding section. */
   title?: string;
+  /** Index of the item open on first render. Pass null to start collapsed. */
+  defaultOpen?: number | null;
+  /** Colour theme: brand green (default) or PLUS indigo. */
+  tone?: "brand" | "plus";
 }
+
+const tones = {
+  brand: {
+    open: "border-brand/40 bg-brand-50/60 shadow-card",
+    icon: "bg-brand-strong text-white",
+    chip: "border-brand-strong bg-brand-strong text-white",
+    number: "text-brand-strong",
+  },
+  plus: {
+    open: "border-plus/30 bg-plus-soft/60 shadow-card",
+    icon: "bg-plus text-white",
+    chip: "border-plus bg-plus text-white",
+    number: "text-plus",
+  },
+} as const;
 
 export function FaqAccordion({
   items = [],
-  title,
+  defaultOpen = 0,
+  tone = "brand",
   className,
+  title: _title,
   ...props
 }: FaqAccordionProps) {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const baseId = useId();
+  const theme = tones[tone];
+  const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const toggleItem = (index: number) => {
-    setActiveIndex(activeIndex === index ? null : index);
+  const topics = useMemo(
+    () => [...new Set(items.map((item) => item.topic).filter((t): t is string => Boolean(t)))],
+    [items]
+  );
+  const [topic, setTopic] = useState<string | null>(null);
+  const visible = topic ? items.filter((item) => item.topic === topic) : items;
+
+  const [openQuestion, setOpenQuestion] = useState<string | null>(
+    defaultOpen === null ? null : (items[defaultOpen]?.question ?? null)
+  );
+
+  const toggle = (question: string) => setOpenQuestion((current) => (current === question ? null : question));
+
+  /* Arrow keys / Home / End move between questions (WAI-ARIA accordion pattern). */
+  const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const last = visible.length - 1;
+    const target = {
+      ArrowDown: index === last ? 0 : index + 1,
+      ArrowUp: index === 0 ? last : index - 1,
+      Home: 0,
+      End: last,
+    }[event.key];
+    if (target === undefined) return;
+    event.preventDefault();
+    buttonsRef.current[target]?.focus();
   };
 
   return (
-    <div className={cn("w-full max-w-3xl mx-auto py-8 relative font-sans", className)} {...props}>
-      {title && (
-        <h2 className="text-center font-bold text-2xl md:text-3xl mb-10 text-neutral-500 dark:text-neutral-400">
-          {title}
-        </h2>
+    <div className={cn("w-full", className)} {...props}>
+      {topics.length > 1 && (
+        <div className="mb-5 flex flex-wrap gap-2" role="group" aria-label="Filter questions by topic">
+          {[null, ...topics].map((t) => {
+            const active = topic === t;
+            return (
+              <button
+                key={t ?? "all"}
+                type="button"
+                aria-pressed={active}
+                onClick={() => setTopic(t)}
+                className={cn(
+                  "rounded-full border px-3.5 py-1.5 text-sm font-medium transition",
+                  active ? theme.chip : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                )}
+              >
+                {t ?? "All"}
+              </button>
+            );
+          })}
+        </div>
       )}
-      
-      <ul className="w-full mx-auto list-none p-0 flex flex-col">
-        {items.map((item, index) => {
-          const isActive = activeIndex === index;
+
+      <ul className="flex flex-col gap-3">
+        {visible.map((item, index) => {
+          const open = openQuestion === item.question;
+          const buttonId = `${baseId}-q${index}`;
+          const panelId = `${baseId}-a${index}`;
           return (
             <li
-              key={index}
+              key={item.question}
               className={cn(
-                "w-full relative transition-all duration-300 ease-in",
-                "border-b-2 border-neutral-100 dark:border-neutral-800",
-                "last:border-b-0",
-                isActive ? "border-b border-neutral-200 dark:border-neutral-700" : ""
+                "rounded-2xl border bg-white transition-colors duration-200",
+                open ? theme.open : "border-slate-200/80 hover:border-slate-300"
               )}
             >
-              <button
-                className={cn(
-                  "flex flex-row items-center justify-start w-full min-h-[60px] py-4 relative m-0 px-4 pl-14 cursor-pointer",
-                  "border-l-[6px] md:border-l-[10px] transition-colors duration-200 text-left outline-none text-base md:text-lg",
-                  isActive 
-                    ? "border-l-brand-strong dark:border-l-neutral-100 bg-brand-50 dark:bg-neutral-800/30 text-neutral-900 dark:text-neutral-100 font-semibold" 
-                    : "border-l-brand-soft dark:border-l-neutral-700 bg-transparent text-neutral-600 dark:text-neutral-400 hover:border-l-brand dark:hover:border-l-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-900/50"
-                )}
-                onClick={() => toggleItem(index)}
-                aria-expanded={isActive}
-              >
-                {/* Plus/Minus Icon */}
-                <span 
-                  className={cn(
-                    "absolute left-4 md:left-5 top-1/2 -translate-y-1/2 transition-all duration-200 leading-none",
-                    isActive ? "text-[32px] md:text-[40px] font-normal text-neutral-900 dark:text-neutral-100" : "text-[24px] md:text-[30px] font-normal text-neutral-400 dark:text-neutral-500"
-                  )}
+              <h3>
+                <button
+                  ref={(el) => {
+                    buttonsRef.current[index] = el;
+                  }}
+                  id={buttonId}
+                  type="button"
+                  aria-expanded={open}
+                  aria-controls={panelId}
+                  onClick={() => toggle(item.question)}
+                  onKeyDown={(event) => onKeyDown(event, index)}
+                  className="flex w-full items-center gap-4 rounded-2xl px-4 py-4 text-left sm:px-5"
                 >
-                  {isActive ? "-" : "+"}
-                </span>
-                
-                <span className="pr-8">{item.question}</span>
-                
-                {/* Chevron */}
-                <span 
-                  className={cn(
-                    "absolute right-6 block w-2 h-2 border-t-[3px] border-r-[3px] transition-transform duration-200 ease-in-out",
-                    isActive ? "rotate-[-44deg] border-neutral-900 dark:border-neutral-100" : "rotate-[133deg] border-neutral-400 dark:border-neutral-500"
-                  )}
-                />
-              </button>
-
-              <div 
+                  <span
+                    className={cn(
+                      "hidden w-7 shrink-0 font-display text-sm font-extrabold tabular-nums sm:block",
+                      open ? theme.number : "text-slate-300"
+                    )}
+                    aria-hidden="true"
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="flex-1 text-[15px] font-semibold text-slate-900 sm:text-base">{item.question}</span>
+                  <span
+                    className={cn(
+                      "grid size-8 shrink-0 place-items-center rounded-full transition-all duration-300",
+                      open ? cn(theme.icon, "rotate-45") : "bg-slate-100 text-slate-600"
+                    )}
+                    aria-hidden="true"
+                  >
+                    <Plus className="size-4" strokeWidth={2.5} />
+                  </span>
+                </button>
+              </h3>
+              <div
+                id={panelId}
+                role="region"
+                aria-labelledby={buttonId}
                 className={cn(
-                  "grid transition-all duration-300 ease-in-out w-full",
-                  "border-l-[6px] md:border-l-[10px]",
-                  isActive ? "grid-rows-[1fr] border-l-neutral-900 dark:border-l-neutral-100 bg-neutral-100/50 dark:bg-neutral-800/30" : "grid-rows-[0fr] border-l-neutral-300 dark:border-l-neutral-700 bg-transparent"
+                  "grid transition-[grid-template-rows] duration-300 ease-out",
+                  open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
                 )}
               >
-                <div className="overflow-hidden">
-                  <div className="flex flex-row items-start justify-start w-full px-4 pl-14 pb-6 pt-2 text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-300">
-                    <span className="opacity-90">{item.answer}</span>
-                  </div>
+                <div className="overflow-hidden" inert={!open}>
+                  <p className="px-4 pb-5 text-[15px] leading-relaxed text-slate-600 sm:pl-16 sm:pr-16">
+                    {item.answer}
+                  </p>
                 </div>
               </div>
             </li>
