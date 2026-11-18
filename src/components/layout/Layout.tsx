@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
-import { PincodeSheet } from "./PincodeSheet";
+import { LocationModal } from "@/components/location/LocationModal";
 import { KineticTextLoader } from "@/components/ui/kinetic-text-loader";
 import {
   Breadcrumb,
@@ -70,7 +70,7 @@ export function Layout() {
         </Suspense>
       </main>
       <SiteFooter />
-      <PincodeSheet />
+      <LocationModal />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { LocationProvider } from "@/context/LocationContext";
 import { Layout } from "@/components/layout/Layout";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import Home from "@/pages/Home";
 
 const Medicine = lazy(() => import("@/pages/Medicine"));
@@ -30,7 +31,14 @@ export default function App() {
                 <Route path="medicine" element={<Medicine />} />
                 <Route path="healthcare" element={<Healthcare />} />
                 <Route path="category/:slug" element={<Category />} />
-                <Route path="cart" element={<Cart />} />
+                <Route
+                  path="cart"
+                  element={
+                    <RequireAuth reason="cart">
+                      <Cart />
+                    </RequireAuth>
+                  }
+                />
                 <Route path="login" element={<Auth mode="login" />} />
                 <Route path="signup" element={<Auth mode="signup" />} />
                 <Route path="plus" element={<Plus />} />

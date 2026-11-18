@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Crown, MapPin, ShoppingBag, Trash2 } from "lucide-react";
 import { plusPrice } from "@/data/catalog";
+import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { PageHeader } from "@/components/layout/Layout";
@@ -18,11 +19,19 @@ import { usePageTitle } from "@/lib/usePageTitle";
 export default function Cart() {
   usePageTitle("Cart");
   const { items, count, subtotal, updateQuantity, removeItem } = useCart();
-  const { location, openSheet } = useLocationPicker();
+  const { location, openPicker } = useLocationPicker();
   const [checkingOut, setCheckingOut] = useState(false);
 
   // Payment isn't implemented yet; this keeps the original "Proceeding to payment…" step.
-  const handleCheckout = () => setCheckingOut(true);
+  const handleCheckout = () => {
+    // A delivery pincode is required before checkout.
+    if (!location) {
+      toast.info("Add your delivery pincode to continue");
+      openPicker();
+      return;
+    }
+    setCheckingOut(true);
+  };
 
   return (
     <>
@@ -94,7 +103,7 @@ export default function Cart() {
               <h2 className="text-lg font-bold">Order summary</h2>
               <button
                 type="button"
-                onClick={openSheet}
+                onClick={openPicker}
                 className="mt-4 flex w-full items-center gap-2 rounded-xl bg-surface px-3 py-2.5 text-left text-sm hover:bg-brand-50"
               >
                 <MapPin className="size-4 shrink-0 text-brand-strong" />

@@ -9,14 +9,14 @@ interface DeliveryChipProps {
 }
 
 export function DeliveryChip({ className, compact = false }: DeliveryChipProps) {
-  const { location, openSheet } = useLocationPicker();
+  const { location, openPicker } = useLocationPicker();
   const place = location ? `${location.postOffice}, ${location.pincode}` : "Select pincode";
 
   if (compact) {
     return (
       <button
         type="button"
-        onClick={openSheet}
+        onClick={openPicker}
         className={cn("flex min-w-0 items-center gap-1.5 text-left text-sm", className)}
       >
         <MapPin className="size-4 shrink-0 text-brand-strong" aria-hidden="true" />
@@ -30,7 +30,7 @@ export function DeliveryChip({ className, compact = false }: DeliveryChipProps) 
   return (
     <button
       type="button"
-      onClick={openSheet}
+      onClick={openPicker}
       className={cn(
         "group flex min-w-0 items-center gap-2 rounded-xl px-2 py-1.5 text-left transition hover:bg-slate-100",
         className
